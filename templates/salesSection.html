@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Ventas{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    {% if allSales %}
+        <div class="table-responsive">
+            <table class="table table-hover text-center">
+                <thead class="table-primary align-text-top">
+                    <tr>
+                        <th>Clave de la venta</th>
+                        <th>Fecha de la venta</th>
+                        <th>Cerrar venta</th>
+                        <th>Actualizar venta</th>
+                        <th>Agregar productos</th>
+                    </tr>
+                </thead>
+                {% for ID, Fecha, Activada in allSales  %}
+                    <tr>
+                        <td>{{ ID }}</td>
+                        <td>{{ Fecha }}</td>
+
+                        {% if Activada == 'SI' %}
+                            <form action="{{url_for('closeSale', id=ID)}}" method="get" onsubmit="return confirmActions('Seguro que desea cerrar la venta?\nYa NO podrá agregar ni eliminar productos.\nSOLO PODRÁ VISUALIZARLA.')">
+                                <td><button type="submit" class="btn btn-warning">Cerrar</button></td>
+                            </form>
+
+                            <td><button class="btn btn-primary" data-url="{{url_for('updateSale', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+
+                            <form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
+                                <td><button type="submit" class="btn btn-success">Agregar</button></td>
+                            </form>
+                        {% else %}
+                        <td><button type="submit" class="btn btn-dark">Bloqueado</button></td>
+                        <td><button type="submit" class="btn btn-dark">Bloqueado</button></td>
+                        <form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
+                            <td><button type="submit" class="btn btn-success">Mirar venta</button></td>
+                        </form>
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <h3 class="fst-italic">No hay ventas registradas.</h3>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Agregar nuevo proveedor{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-flex justify-content-center">
+        <div class="row align-items-center d-flex justify-content-center">
+            <h1 class="text-center my-2 fst-italic">Agregar Nuevo Proveedor</h1>
+            <form class="was-validated col-12 p-4 text-bg-light" action="/addVendor" method="post"
+                onsubmit="return confirmActions('¿Agregar al proveedor?')">
+
+                <div class="mb-3">
+                    <label for="IDVendor" class="form-label">Clave del proveedor:</label>
+                    <input class="form-control" type="text" name="IDVendor" id="IDVendor" pattern="^[0-9]+$" title="Solo se permiten números" placeholder="Introduzca la clave del proveedor..." required>
+                    <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Nombre" class="form-label">Nombre:</label>
+                    <input class="form-control" type="text" name="Nombre" id="Nombre" pattern="^[ a-zA-ZáéíóúÁÉÍÓÚñÑ0-9]+$" title="Solo se permiten letras y números" placeholder="Introduzca el nombre del proveedor..." required>
+                    <div class="invalid-feedback">Escriba el nombre en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Numero" class="form-label">Número de teléfono:</label>
+                    <input class="form-control" type="tel" name="Numero" id="Numero" pattern="5[56] [0-9]{4} [0-9]{4}" title="Solo se permiten números" placeholder="Introduzca el número de teléfono del proveedor..." required>
+                    <div class="invalid-feedback">Escriba el teléfono en el formato: 55 1122 3344.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Dia" class="form-label">Día de visita:</label>
+                    <select class="col-12 p-1" name="Dia" id="Dia" required>
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <option value="Domingo">Domingo</option>
+                        <option value="Lunes">Lunes</option>
+                        <option value="Martes">Martes</option>
+                        <option value="Miércoles" >Miércoles</option>
+                        <option value="Jueves">Jueves</option>
+                        <option value="Viernes">Viernes</option>
+                        <option value="Sábado">Sábado</option>
+                    </select>
+                    <div class="invalid-feedback">Seleccione un día de visita.</div>
+                </div>
+
+                <button type="submit" class="col-12 btn btn-success">Agregar proveedor</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

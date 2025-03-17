@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Agregar nueva compra{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-flex justify-content-center">
+        <div class="row align-items-center d-flex justify-content-center">
+            <h1 class="text-center my-2 fst-italic">Agregar Nueva Compra</h1>
+
+            <form class="was-validated col-12 p-4 text-bg-light" action="{{url_for('addOrder')}}" method="post"
+                onsubmit="return confirmActions('¿Agregar la compra?')">
+
+                <div class="mb-3">
+                    <label for="ID" class="form-label">Clave de la compra:</label>
+                    <input type="text" class="form-control" id="ID" name="ID" placeholder="Introduzca la clave de la compra..." pattern="^[0-9]+$" title="Solo se permiten números" required>
+                    <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="IDVendor" class="form-label">Nombre del proveedor:</label>
+                    <select class="col-12 p-1" name="IDVendor" id="IDVendor" required>
+                        {% if allIDVendors %}
+                            <option value="" disabled selected>Selecciona una opción</option>
+                            {% for IDs in allIDVendors %}
+                                <option value="{{ IDs[0] }}">{{ IDs[1] }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="" disabled selected>No hay proveedores registrados</option>
+                        {% endif %}
+                    </select>
+                    <div class="invalid-feedback">Seleccione un proveedor de la lista.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="IDProduct" class="form-label">Nombre del producto:</label>
+                    <select class="col-12 p-1" name="IDProduct" id="IDProduct" required>
+                        {% if allIDProducts %}
+                            <option value="" disabled selected>Selecciona una opción</option>
+                            {% for IDs2 in allIDProducts %}
+                                <option value="{{ IDs2[0] }}">{{ IDs2[1] }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="" disabled selected>No hay productos registrados</option>
+                        {% endif %}
+                    </select>
+                    <div class="invalid-feedback">Seleccione un producto de la lista.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="CostoUnidad" class="form-label">Costo:</label>
+                    <input type="text" class="form-control" id="CostoUnidad" name="CostoUnidad" placeholder="Introduzca el costo por unidad del producto..." pattern="^(?!0$)(?!0\d)[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" oninput="calculateTotalCost()" required>
+                    <div class="invalid-feedback">Escriba el costo en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Cantidad" class="form-label">Cantidad:</label>
+                    <input type="number" class="form-control" id="Cantidad" name="Cantidad" min="1" oninput="calculateTotalCost()"  value="0" placeholder="Introduzca la cantidad comprada..." required>
+                    <div class="invalid-feedback">Escriba la cantidad en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="CostoTotal" class="form-label">Costo total:</label>
+                    <input type="text" class="form-control" id="CostoTotal" name="CostoTotal" placeholder="Introduzca el costo total de la compra..." pattern="^(?!0$)(?!0\d)[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" readonly>
+                    <div class="invalid-feedback">Escriba el costo en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Fecha" class="form-label">Fecha de compra:</label>
+                    <input type="date" class="form-control" id="Fecha" name="Fecha" required>
+                    <div class="invalid-feedback">Seleccione una fecha.</div>
+                </div>
+
+                <button type="submit" class="col-12 btn btn-success">Agregar producto</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

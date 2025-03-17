@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.Title{
+    margin: 0;
+    padding: 10px;
+    font-size: 48px;
+    position: absolute;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.Login{
+    width: 50%;
+    display: flex;
+    justify-content:start;
+    align-items: start;
+    flex-direction: column;
+}
+
+.Login input[type="text"], .Login input[type="password"]{
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 15px;
+}
+
+.Login input[type="text"]:focus-within, .Login input[type="password"]:focus-within{
+    border: 2px solid aqua;
+}
+
+.Login input[type="submit"]{
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 15px;
+    background-color: #00ff37;
+}
+.Login input[type="submit"]:hover{
+    background-color: #29db4f;
+    cursor: pointer;
+}
+
+.Login label{
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.Login a{
+    align-self: center;
+    text-decoration: none;
+}
+
+#imgLogin{
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+}

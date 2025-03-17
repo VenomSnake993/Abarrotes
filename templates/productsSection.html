@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Productos{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    {% if allProducts %}
+        <div class="table-responsive">
+            <table class="table table-hover text-center">
+                <thead class="table-primary align-text-top">
+                    <tr>
+                        <th>Clave del producto</th>
+                        <th>Nombre</th>
+                        <th>Costo</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Fecha de caducidad</th>
+                        <th>Descripción</th>
+                        <th>Actualizar producto</th>
+                        <th>Eliminar producto</th>
+                    </tr>
+                </thead>
+                {% for ID, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion in allProducts %}
+                    <tr>
+                        <td>{{ ID }}</td>
+                        <td>{{ Nombre }}</td>
+                        <td>${{ Costo }}</td>
+                        <td>${{ Precio }}</td>
+                        <td>{{ Cantidad }}</td>
+
+                        {% if Fecha %}
+                            <td>{{ Fecha }}</td>
+                        {% else %}
+                            <td>Sin fecha de caducidad</td>
+                        {% endif %}
+
+                        {% if Descripcion %}
+                            <td>{{ Descripcion }}</td>
+                        {% else %}
+                            <td>Sin descripción</td>
+                        {% endif %}
+
+                        <td><button class="btn btn-primary" data-url="{{url_for('updateProduct', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                        <form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')">
+                            <td><button type="submit" class="btn btn-danger">Eliminar</button></td>
+                        </form>
+                        
+
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <h3 class="fst-italic">No hay productos registrados.</h3>
+    {% endif %}
+
+{% endblock %}

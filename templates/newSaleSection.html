@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Agregar nueva venta{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-flex justify-content-center">
+        <div class="row align-items-center d-flex justify-content-center">
+            <h1 class="text-center my-2 fst-italic">Agregar Nueva Venta</h1>
+
+            <form class="was-validated col-12 p-4 text-bg-light" action="{{url_for('addSale')}}" method="post"
+                onsubmit="return confirmActions('¿Agregar la venta?')">
+
+                <div class="mb-3">
+                    <label for="ID" class="form-label">Clave de la venta:</label>
+                    <input type="text" class="form-control" id="ID" name="ID" placeholder="Introduzca la clave de la venta..." pattern="^[0-9]+$" title="Solo se permiten números" required>
+                    <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Fecha" class="form-label">Fecha de venta:</label>
+                    <input type="date" class="form-control" id="Fecha" name="Fecha" required>
+                    <div class="invalid-feedback">Seleccione una fecha.</div>
+                </div>
+
+                <button type="submit" class="col-12 btn btn-success">Agregar venta</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Agregar nuevo producto{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-flex justify-content-center">
+        <div class="row align-items-center d-flex justify-content-center">
+            <h1 class="text-center my-2 fst-italic">Agregar Nuevo Producto</h1>
+
+            <form class="was-validated col-12 p-4 text-bg-light" action="{{url_for('addProduct')}}" method="post"
+                onsubmit="return confirmActions('¿Agregar el producto?')">
+
+                <div class="mb-3">
+                    <label for="ID" class="form-label">Clave del producto:</label>
+                    <input type="text" class="form-control" id="ID" name="ID" placeholder="Introduzca la clave del producto..." pattern="^[0-9]+$" title="Solo se permiten números" required>
+                    <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Nombre" class="form-label">Producto:</label>
+                    <input type="text" class="form-control" id="Nombre" name="Nombre" placeholder="Introduzca el nombre del producto..." pattern="^[ a-zA-ZáéíóúÁÉÍÓÚñÑ0-9.]+$" title="Solo se permiten letras, números y puntos" required>
+                    <div class="invalid-feedback">Escriba el nombre en un formato válido.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Costo" class="form-label">Costo:</label>
+                    <input type="text" class="form-control" id="Costo" name="Costo" placeholder="Introduzca el costo del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" required>
+                    <div class="invalid-feedback">Escriba el costo en un formato válido.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="Precio" class="form-label">Precio:</label>
+                    <input type="text" class="form-control" id="Precio" name="Precio" placeholder="Introduzca el precio de venta del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" required>
+                    <div class="invalid-feedback">Escriba el precio en un formato válido.</div>
+                </div>
+                <!-- <div class="mb-3">
+                    <label for="Cantidad" class="form-label">Cantidad:</label>
+                    <input type="number" class="form-control" id="Cantidad" name="Cantidad" min="1"  value="1" required>
+                </div> -->
+                <div class="mb-3">
+                    <label for="Fecha" class="form-label">Fecha de caducidad:</label>
+                    <input type="date" class="form-control" id="Fecha" name="Fecha">
+                </div>
+                <div class="mb-3">
+                    <label for="Descripcion" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="Descripcion" name="Descripcion" rows="3" placeholder="Introduzca la información del producto (opcional)..."></textarea>
+                </div>
+
+                <button type="submit" class="col-12 btn btn-success">Agregar producto</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

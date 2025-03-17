@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Abarrotes Patch</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'Images/icon.png') }}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body class="d-flex justify-content-center">
+    {% block content %}
+        <div class="container-fluid my-2 justify-content-start position-fixed">
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-info align-items-center alert-dismissible fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+    <div class="row min-vh-100 vw-100 align-items-center d-flex justify-content-center">
+        <div class="col-md-6 p-4 bg-primary">
+            <div class="col-md-12 p-4 text-bg-light">
+                <h1 class="text-center">Abarrotes Patch</h1>
+                <h4 class="text-center fst-italic">Inicio de Sesión</h4>
+
+                <form action="/" method="POST">
+                    <div class="mb-3">
+                        <label for="User" class="form-label">Usuario:</label>
+                        <input class="form-control" type="text" name="User" id="User" pattern="^[ a-zA-Z0-9_]+$"
+                        placeholder="Introduzca su usuario..." title="Solo se permiten letras, números, espacios y guiones bajos" required>
+                        <!-- <div class="invalid-feedback">Escriba el usuario en un formato válido.</div> -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="Pass" class="form-label">Contraseña:</label>
+                        <input class="form-control" type="password" name="Pass" id="Pass" placeholder="Introduzca su contraseña..." required>
+                        <!-- <div class="invalid-feedback">Escriba su contraseña.</div> -->
+                    </div>
+                    <button type="submit" class="btn btn-primary col-12">Acceder</button>
+                    <div class="col-12 text-center mt-2">
+                        <a href="{{url_for('passwordRecovery')}}" class="fst-italic">¿Olvido su contraseña?</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="col-md-5 align-content-center">
+            <img src="{{url_for ('static',filename='Images/Login.png')}}" alt="Abarroteria" id="imgLogin"
+                class="img-fluid">
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename = 'JavaScript/index.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

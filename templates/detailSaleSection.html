@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Detalle de Ventas{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block body %}
+{% if Activa == 'SI' %}
+<div class="container-fluid d-lg-flex p-0">
+    <div class="col-lg-4 p-4 text-bg-light">
+        <h3 class="fst-italic text-center">Agregar productos</h3>
+        <form action="/addDetailSaleSection" method="post">
+
+            <div class="mb-3">
+                <label for="ID_Product" class="form-label">Producto:</label>
+                <select class="form-select" name="ID_Product" id="ID_Product" onchange="getPriceProduct()" required>
+                    {% if allProducts %}
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    {% for product in allProducts %}
+                    {% if product[4] == 0%}
+                    <option disabled value="">{{ product[1] }} (No disponible)</option>
+                    {% else %}
+                    <option data-price="{{ product[3] }}" value="{{ product[0] }}">{{ product[1] }} ({{ product[4] }}pz)
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <option value="" disabled selected>No hay productos registrados</option>
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="Cantidad" class="form-label">Cantidad:</label>
+                <input type="number" class="form-control form" id="Cantidad" name="Cantidad" min="1"
+                    placeholder="Introduzca la cantidad a vender..." pattern="^[1-9]+$" oninput="calculateTotalPrice()"
+                    readonly required>
+            </div>
+
+            <div class="mb-3">
+                <label for="Precio" class="form-label">Precio:</label>
+                <input type="text" class="form-control" id="Precio" name="Precio"
+                    placeholder="Introduzca el precio por unidad del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                    title="Solo se permiten números y hasta dos decimales" readonly required>
+            </div>
+
+            <div class="mb-3">
+                <label for="Total" class="form-label">Total:</label>
+                <input class="form-control" type="text" name="Total" id="Total"
+                    placeholder="Introduzca el total de la venta..." pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                    title="Solo se permiten números y hasta dos decimales" readonly required>
+            </div>
+
+            <button class="btn btn-success col-12">Agregar</button>
+        </form>
+    </div>
+    {% endif %}
+    {% if allDeSales %}
+    <div class="table-responsive {% if Activa == 'SI' %}col-lg-8{% endif %}">
+        <table class="table table-hover text-center">
+            <thead class="table-primary align-text-top">
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad Vendida</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                    {% if Activa == 'SI' %}
+                    <th>Eliminar Producto</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            {% for ID, ID_Venta, Producto, Cantidad, Precio, Total in allDeSales %}
+            <tr>
+                <td>{{ Producto }}</td>
+                <td>{{ Cantidad }}</td>
+                <td>${{ Precio }}</td>
+                <td>${{ Total }}</td>
+                {% if Activa == 'SI' %}
+                <form action="{{url_for('deleteDetailSaleProduct', id=ID)}}" method="get"
+                    onsubmit="return confirmActions('¿Eliminar {{Producto}} de la venta?')">
+                    <td><button type="submit" class="btn btn-danger">Eliminar</button></td>
+                </form>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        {% if totalSales %}
+        <div>
+            <h5 class="{% if Activa == 'NO' %} text-center {% endif %}"><strong>Total de ventas obtenidas: $ {{ totalSales }}</strong></h5>
+        </div>
+        {% else %}
+        <div>
+            <h5>No hay ventas realizadas...</h5>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <h3 class="fst-italic">No hay productos registrados en la venta.</h3>
+    {% endif %}
+    {% if Activa == 'SI' %}
+</div>
+{% endif %}
+{% endblock %}
