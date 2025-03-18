@@ -12,12 +12,16 @@
 <body class="d-flex justify-content-center">
     {% block content %}
         <div class="container-fluid my-2 justify-content-start position-fixed">
-            {% for message in get_flashed_messages() %}
-                <div class="alert alert-info align-items-center alert-dismissible fade show" role="alert">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                <div class="alert {% if category == 'error' %}alert-danger {% endif %} {% if category == 'success' %}alert-success {% endif %}  align-items-center alert-dismissible fade show" role="alert">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     {{ message }}
                 </div>
-            {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
         </div>
     {% endblock %}
     <div class="row min-vh-100 vw-100 align-items-center d-flex justify-content-center">
