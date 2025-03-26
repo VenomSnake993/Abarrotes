@@ -1,10 +1,10 @@
 import secrets
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 import os
 import bcrypt
-from Python.sendHtmlEmail import SendHTMLEmail
+# from Python.sendHtmlEmail import SendHTMLEmail
 from Python.sendEmail import sendSimpleEmail, codeGenerate
 
 app = Flask(__name__)
