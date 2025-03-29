@@ -2,6 +2,12 @@ confirmActions = function (message) {
     return confirm(message);
 }
 
+dynamicNavBar = function (url) {
+    let navBarImageLink = document.getElementById("navigationBarContainer").children[0];
+    navBarImageLink.setAttribute("href", url)
+    console.log(navBarImageLink.getAttribute("href"))
+}
+
 openUpdateProductWindow = function (button) {
     let url = button.getAttribute("data-url");
 
@@ -136,7 +142,7 @@ deleteProductSale = function (Id) {
             newTotalQuantity = parseInt(noSelectedProductQuantity) + parseInt(productQuantitySale);
             productUpdate.setAttribute("data-piece", newTotalQuantity);
 
-        }else{
+        } else {
             productIndexOption = allProductNames.indexOf(productName + " (No disponible)");
             productUpdate = allSelectOptions[productIndexOption];
 
