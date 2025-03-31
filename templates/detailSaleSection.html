@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Detalle de Ventas{% endblock %}
-{% block head %}
-    {{ super() }}
-{% endblock %}
 
 {% block body %}
-<style onload="dynamicNavBar('/salesSection')"></style>
+    <style onload="dynamicNavBar('/salesSection')"></style>
     {% if Activa == 'SI' %}
     <div class="container-fluid d-lg-flex p-0">
         <div class="col-lg-4 p-4 text-bg-light">
@@ -51,7 +48,6 @@
                         placeholder="Introduzca el total de la venta..." pattern="^[0-9]+(\.[0-9]{1,2})?$"
                         title="Solo se permiten números y hasta dos decimales" readonly required>
                 </div>
-
                 <button type="submit" class="btn btn-success col-12">Agregar</button>
             </form>
         </div>
@@ -81,84 +77,130 @@
                         </tr>
                     </tfoot>
                 </table>
-                <div class="container d-flex justify-content-center"><button type="button" class="col-12 btn btn-success">Vender todos los productos</button></div>
+                <div class="container d-flex justify-content-center"><button type="button" class="col-12 btn btn-success" id="sendProductSalesDataBtn">Vender todos los productos</button></div>
             </div>
     {% if Activa == 'SI' %}
     </div>
-        <script>
-            const form = document.getElementById("addDetailSaleForm");
+    <script>
+        const button = document.querySelector('#sendProductSalesDataBtn');
+        const table = document.querySelector('#tableBody');
+        let productsToSale = undefined;
+        const allproductsToSaleValue = [];
 
-            form.addEventListener("submit",function(event){
-                event.preventDefault();
+        button.addEventListener('click', function () {
+            if (table.children.length > 0 ) {
+                console.log(table.children)
+                productsToSale = table.children;
 
-                // Creación de objeto con los datos del form
-                let formData = new FormData(form);
-                // Creación de variable 
-                let tableProductSale = document.getElementById("tableBody");
-                // Obtener opción seleccionada
-                let productSelect = document.querySelector("#ID_Product");
-                let selectedOption = productSelect.selectedOptions[0];
-                // Obtener valores de la opción: texto, piezas y cantidad a vender
-                let productName = productSelect.selectedOptions[0].innerText;
-                let piecesAvailable = selectedOption.getAttribute("data-piece");
-                let inputQuantity = document.getElementById("Cantidad");
-                let pieceSale = inputQuantity.value;
-                // Descontar lo añadido a la venta del inventario
-                let totalPiece = parseInt(piecesAvailable) - parseInt(pieceSale)
-
-                if (pieceSale > 0 ) {
-                    let ID_Product = document.getElementById("ID_Product").value
-                    document.getElementById(ID_Product).setAttribute("data-piece", totalPiece)
-
-                    if (totalPiece > 0) {
-                        document.getElementById("quantityAvailable").innerText = "Cantidad disponible: " + totalPiece;
-                        inputQuantity.setAttribute("max", totalPiece);
-                    } else {
-                        inputQuantity.setAttribute("readonly", true);
-                        productSelect.selectedOptions[0].innerText = productName + " (No disponible)"
-                        productSelect.selectedOptions[0].setAttribute("disabled", true)
-                        inputQuantity.value = 0;
-                        document.getElementById("quantityAvailable").innerText = "Sin existencias...";
-                        document.getElementById("Total").value = 0;
-                        document.getElementById("Precio").value = 0;
-                    }
-
-                    let newSaleProductRow = tableProductSale.insertRow();
-                    let newSaleProductData = newSaleProductRow.insertCell(0);
-                    let totalProductSale = document.getElementById("totalProductSales");
-                    let tBodyRows = document.getElementById("tableBody").children;
-                    const tBodyDataCells = [];
-                    let productSale = undefined
-                    let totalPrice = 0;
-
-                    newSaleProductData.innerHTML = '<button type="button" class="btn btn-danger" onclick="deleteProductSale(this)">Eliminar</button>'
-                    newSaleProductData = newSaleProductRow.insertCell(1);
-                    newSaleProductData.textContent = productName
-
-                    newSaleProductData = newSaleProductRow.insertCell(2);
-                    newSaleProductData.textContent = formData.get("Cantidad");
-
-                    newSaleProductData = newSaleProductRow.insertCell(3);
-                    newSaleProductData.textContent = "$" + formData.get("Precio");
-
-                    newSaleProductData = newSaleProductRow.insertCell(4);
-                    newSaleProductData.textContent = "$" + formData.get("Total");
-
-                    for (let index = 0; index < tBodyRows.length; index++) {
-                        productSale = tBodyRows[index]
-                        productSale.children[4]
-                        tBodyDataCells.push(productSale.children[4].innerText);
-                    }
-
-                    for (let number = 0; number < tBodyDataCells.length; number++) {
-                        productSale = tBodyDataCells[number].replace("$","");
-                        totalPrice += parseFloat(productSale);
-                    }
-
-                    totalProductSale.innerText = '$' + totalPrice.toFixed(2);
+                for (let index = 0; index < productsToSale.length; index++) {
+                    const product = {name: productsToSale[index].children[1].innerHTML, quantity: productsToSale[index].children[2].innerHTML, price: productsToSale[index].children[3].innerHTML, total: productsToSale[index].children[4].innerHTML};
+                    allproductsToSaleValue.push(product)
                 }
-            })
-        </script>
+
+                fetch('/addSalesProducts', {headers : {'Content-Type' : 'application/json'}, method : 'POST',
+                    body : JSON.stringify( {
+                        'Lista' : allproductsToSaleValue
+                    })
+                })
+                .then(function (response){
+
+                    if(response.ok) {
+                        response.json()
+                        table.remove();
+                        document.getElementById("totalProductSales").innerText = "$0";
+                        alert("Venta realizada con éxito.")
+                        .then(function(response) {
+                            console.log(response);
+                            //Eliminar columnas de la tabla y poner mensaje con JS de que se registro la venta
+                        });
+                    }
+                    else {
+                        throw Error('Something went wrong');
+                    }
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+                console.log(allproductsToSaleValue)
+            }else{
+                alert("No ha agregado productos para vender.")
+            }
+        });
+    </script>
+    <script>
+        const form = document.getElementById("addDetailSaleForm");
+
+        form.addEventListener("submit",function(event){
+            event.preventDefault();
+
+            // Creación de objeto con los datos del form
+            let formData = new FormData(form);
+            // Creación de variable 
+            let tableProductSale = document.getElementById("tableBody");
+            // Obtener opción seleccionada
+            let productSelect = document.querySelector("#ID_Product");
+            let selectedOption = productSelect.selectedOptions[0];
+            // Obtener valores de la opción: texto, piezas y cantidad a vender
+            let productName = productSelect.selectedOptions[0].innerText;
+            let piecesAvailable = selectedOption.getAttribute("data-piece");
+            let inputQuantity = document.getElementById("Cantidad");
+            let pieceSale = inputQuantity.value;
+            // Descontar lo añadido a la venta del inventario
+            let totalPiece = parseInt(piecesAvailable) - parseInt(pieceSale)
+
+            if (pieceSale > 0 ) {
+                let ID_Product = document.getElementById("ID_Product").value
+                document.getElementById(ID_Product).setAttribute("data-piece", totalPiece)
+
+                if (totalPiece > 0) {
+                    document.getElementById("quantityAvailable").innerText = "Cantidad disponible: " + totalPiece;
+                    inputQuantity.setAttribute("max", totalPiece);
+                } else {
+                    inputQuantity.setAttribute("readonly", true);
+                    productSelect.selectedOptions[0].innerText = productName + " (No disponible)"
+                    productSelect.selectedOptions[0].setAttribute("disabled", true)
+                    inputQuantity.value = 0;
+                    document.getElementById("quantityAvailable").innerText = "Sin existencias...";
+                    document.getElementById("Total").value = 0;
+                    document.getElementById("Precio").value = 0;
+                }
+
+                let newSaleProductRow = tableProductSale.insertRow();
+                let newSaleProductData = newSaleProductRow.insertCell(0);
+                let totalProductSale = document.getElementById("totalProductSales");
+                let tBodyRows = document.getElementById("tableBody").children;
+                const tBodyDataCells = [];
+                let productSale = undefined
+                let totalPrice = 0;
+
+                newSaleProductData.innerHTML = '<button type="button" class="btn btn-danger" onclick="deleteProductSale(this)">Eliminar</button>'
+                newSaleProductData = newSaleProductRow.insertCell(1);
+                newSaleProductData.textContent = productName
+
+                newSaleProductData = newSaleProductRow.insertCell(2);
+                newSaleProductData.textContent = formData.get("Cantidad");
+
+                newSaleProductData = newSaleProductRow.insertCell(3);
+                newSaleProductData.textContent = "$" + formData.get("Precio");
+
+                newSaleProductData = newSaleProductRow.insertCell(4);
+                newSaleProductData.textContent = "$" + formData.get("Total");
+
+                for (let index = 0; index < tBodyRows.length; index++) {
+                    productSale = tBodyRows[index]
+                    productSale.children[4]
+                    tBodyDataCells.push(productSale.children[4].innerText);
+                }
+
+                for (let number = 0; number < tBodyDataCells.length; number++) {
+                    productSale = tBodyDataCells[number].replace("$","");
+                    totalPrice += parseFloat(productSale);
+                }
+
+                totalProductSale.innerText = '$' + totalPrice.toFixed(2);
+            }
+        })
+    </script>
     {% endif %}
 
 {% endblock %}

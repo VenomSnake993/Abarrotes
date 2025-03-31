@@ -1,5 +1,5 @@
 import secrets
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 import os
@@ -721,6 +721,47 @@ def detailSaleSection(id):
     except Exception as error:
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
+
+# Add Sales Products route JSON
+@app.route('/addSalesProducts', methods=['POST'])
+def addSalesProducts():
+    try:
+        if 'ID_User' in session:
+            if request.method == 'POST':
+                jsonData = request.get_json()
+                cur = mysql.connection.cursor()
+                
+                for index in jsonData.values():
+                    for index2 in index:
+                        productName = index2.get("name")
+                        productQuantity = index2.get("quantity")
+                        productPrice = index2.get("price").replace("$", "")
+                        productTotal = index2.get("total").replace("$", "")
+                        print(productName, productQuantity, productPrice, productTotal)
+                        cur.execute("SELECT ID_Product FROM products WHERE Name = %s", (productName,))
+                        indexProduct = cur.fetchone()
+
+                        if indexProduct != None:
+                            cur.execute("SELECT Quantity FROM products WHERE ID_Product = %s",(indexProduct,))
+                            totalQuantity = cur.fetchone()[0]
+                            newTotalQuantity = int(totalQuantity) - int(productQuantity)
+
+                            cur.execute("INSERT INTO detail_sales (ID_Sale, ID_Product, Quantity, Price, Total) VALUES (1, %s, %s, %s, %s)", (indexProduct, productQuantity, productPrice, productTotal))
+                            mysql.connection.commit()
+
+                            cur.execute("UPDATE products SET Quantity = %s WHERE ID_Product = %s", (newTotalQuantity, indexProduct))
+                            mysql.connection.commit()
+                    cur.close()
+                return jsonify(jsonData)
+
+        else:
+            flash("No has iniciado sesión.", "error")
+            return redirect(url_for("index"))
+
+    except Exception as error:
+        print(error)
+        flash(f"Ocurrio un error: {error}.", "error")
+    return redirect(url_for("detailSaleSection", id = session["SaleNumber"]))
 
 # Detail Sales (ADD PRODUCTS) Route
 @app.route('/addDetailSaleSection', methods=['POST'])

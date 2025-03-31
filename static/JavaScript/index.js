@@ -5,17 +5,15 @@ confirmActions = function (message) {
 dynamicNavBar = function (url) {
     let navBarImageLink = document.getElementById("navigationBarContainer").children[0];
     navBarImageLink.setAttribute("href", url)
-    console.log(navBarImageLink.getAttribute("href"))
+    // console.log(navBarImageLink.getAttribute("href"))
 }
 
 openUpdateProductWindow = function (button) {
     let url = button.getAttribute("data-url");
 
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
-        console.log("Estás usando un dispositivo móvil!!");
         window.open(url, '_self', ',menubar=0, location=yes, resizable=0, scrollbars=1, status=1, titlebar=1')
     } else {
-        console.log("No estás usando un móvil");
         window.open(url, '_blank', ',menubar=0, location=yes, resizable=0, scrollbars=1, status=1, titlebar=1, width=640,height=600');
     }
 

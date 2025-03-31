@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Ventas{% endblock %}
-{% block head %}
-    {{ super() }}
-{% endblock %}
 
 {% block body %}
 <style onload="dynamicNavBar('/salesSection')"></style>
@@ -14,6 +11,7 @@
                         <th>Clave de la venta</th>
                         <th>Fecha de la venta</th>
                         <th>Cerrar venta</th>
+                        <th>Productos vendidos</th>
                         <th>Actualizar venta</th>
                         <th>Agregar productos</th>
                     </tr>
@@ -26,6 +24,10 @@
                         {% if Activada == 'SI' %}
                             <form action="{{url_for('closeSale', id=ID)}}" method="get" onsubmit="return confirmActions('Seguro que desea cerrar la venta?\nYa NO podrá agregar ni eliminar productos.\nSOLO PODRÁ VISUALIZARLA.')">
                                 <td><button type="submit" class="btn btn-warning">Cerrar</button></td>
+                            </form>
+
+                            <form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
+                                <td><button type="submit" class="btn btn-info">Mirar</button></td>
                             </form>
 
                             <td><button class="btn btn-primary" data-url="{{url_for('updateSale', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
