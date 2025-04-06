@@ -152,3 +152,51 @@ deleteProductSale = function (Id) {
         }
     }
 }
+
+saleAllProducts = function () {
+    const table = document.querySelector('#tableBody');
+    let productsToSale = undefined;
+    const allproductsToSaleValue = [];
+
+    if (table.children.length > 0) {
+        action = confirmActions("¿Realizar venta de los productos?");
+        if (action) {
+            console.log(table.children)
+        productsToSale = table.children;
+
+        for (let index = 0; index < productsToSale.length; index++) {
+            const product = { name: productsToSale[index].children[1].innerHTML, quantity: productsToSale[index].children[2].innerHTML, price: productsToSale[index].children[3].innerHTML, total: productsToSale[index].children[4].innerHTML };
+            allproductsToSaleValue.push(product)
+        }
+
+        fetch('/addSalesProducts', {
+            headers: { 'Content-Type': 'application/json' }, method: 'POST',
+            body: JSON.stringify({
+                'Lista': allproductsToSaleValue
+            })
+        })
+            .then(function (response) {
+
+                if (response.ok) {
+                    response.json()
+                    table.remove();
+                    document.getElementById("totalProductSales").innerText = "$0";
+                    alert("Venta realizada con éxito.")
+                        .then(function (response) {
+                            console.log(response);
+                        });
+                }
+                else {
+                    throw Error('Something went wrong');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        console.log(allproductsToSaleValue);
+        }
+
+    } else {
+        alert("No ha agregado productos para vender.");
+    }
+}

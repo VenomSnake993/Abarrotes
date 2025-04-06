@@ -22,10 +22,11 @@
                         <td>{{ Nombre }}</td>
                         <td>+52 {{ Numero }}</td>
                         <td>{{ Dia }}</td>
+
                         <td><button class="btn btn-primary" data-url="{{url_for('updateVendor', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
-                        <form action="{{url_for('deleteVendor', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de proveedores?')">
-                            <td><button type="submit" class="btn btn-danger">Eliminar</button></td>
-                        </form>
+
+                        <td><form action="{{url_for('deleteVendor', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de proveedores?')"><button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form></td>
                     </tr>
                 {% endfor %}
             </table>

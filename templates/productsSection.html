@@ -39,9 +39,9 @@
                         {% endif %}
 
                         <td><button class="btn btn-primary" data-url="{{url_for('updateProduct', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
-                        <form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')">
-                            <td><button type="submit" class="btn btn-danger">Eliminar</button></td>
-                        </form>
+
+                        <td><form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')"> <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form></td>
                         
 
                     </tr>

@@ -52,12 +52,13 @@ def index():
     return render_template("index.html")
 
 # Logout Route
-@app.route('/logout', methods=['GET'])
+@app.route('/logout')
 def logout():
     session.pop("ID_User", None)
     session.pop("ResUser", None)
     session.pop("CodeForPw", None)
     session.pop("User_Name", None)
+    session.pop("SaleNumber", None)
     flash("Sesión cerrada correctamente.", "success")
     return redirect(url_for("index"))
 
@@ -340,17 +341,17 @@ def addVendor():
                 number = request.form["Numero"]
                 date = request.form["Dia"]
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT ID_Vendor FROM vendors WHERE ID_Vendor = %s OR Name = %s", (idVendor, name))
+                cur.execute("SELECT ID_Vendor FROM vendors WHERE ID_Vendor = %s OR Name = %s OR Number = %s", (idVendor, name, number))
                 sqlValue = cur.fetchone()
 
-                if sqlValue is None: # Si no existe un producto con ese ID o nombre lo agrega
+                if sqlValue is None: # Si no existe un proveedor con ese ID, nombre ó teléfono lo agrega
                     cur.execute("INSERT INTO vendors (ID_Vendor, Name, Number, Visit_Day) VALUES (%s, %s, %s, %s)", (idVendor, name, number, date))
                     mysql.connection.commit()
                     cur.close()
-                    flash(f"Proveedor {name} agregado correctamente.", "success")
+                    flash(f"Proveedor \"{name}\" agregado correctamente.", "success")
                     return redirect(url_for("addVendor"))
                 else:
-                    flash("El ID o Nombre del proveedor ya existe.", "error")
+                    flash("El ID, nombre ó teléfono del proveedor ya existe.", "error")
         else:
             flash("No has iniciado sesión.", "error")
             return redirect(url_for("index"))
@@ -371,7 +372,7 @@ def deleteVendor(id):
             cur.execute("SELECT ID FROM orders WHERE ID_Vendor = %s", (id,))
             sqlValue = cur.fetchall()
 
-            if sqlValue == tuple(): # Si no existe una orden con ese ID lo elimina
+            if sqlValue == tuple():
                 cur.execute("DELETE FROM vendors WHERE ID_Vendor = %s", (id,))
                 mysql.connection.commit()
                 cur.close()
@@ -397,6 +398,7 @@ def updateVendor(id):
     try:
 
         if 'ID_User' in session:
+
             if request.method == "GET":
                 cur = mysql.connection.cursor()
                 cur.execute("SELECT * FROM vendors WHERE ID_Vendor = %s", (id,))
@@ -407,28 +409,28 @@ def updateVendor(id):
             if request.method == "POST":
                 idVendor = int(request.form["IDVendor"])
                 name = request.form["Nombre"]
-                Number = request.form["Numero"]
+                number = request.form["Numero"]
                 date = request.form["Dia"]
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT ID_Vendor FROM vendors WHERE (ID_Vendor = %s OR Name = %s) AND ID_Vendor != %s", (idVendor, name,id))
+                cur.execute("SELECT ID_Vendor FROM vendors WHERE (ID_Vendor = %s OR Name = %s OR Number = %s) AND ID_Vendor != %s", (idVendor, name, number, id))
                 sqlValue = cur.fetchone()
 
-                if sqlValue is None: # Si no existe un producto con ese ID o nombre actualiza todo
-                    cur.execute("UPDATE vendors SET ID_Vendor = %s, Name = %s, Number = %s, Visit_Day = %s WHERE ID_Vendor = %s", (idVendor, name, Number, date ,id))
-                    flashMessage = "Los campos del proveedor fueron actualizados."
+                if sqlValue is None:
+                    cur.execute("UPDATE vendors SET ID_Vendor = %s, Name = %s, Number = %s, Visit_Day = %s WHERE ID_Vendor = %s", (idVendor, name, number, date ,id))
+                    mysql.connection.commit()
+                    flash("Los campos del proveedor fueron actualizados.", "success")
 
                     if idVendor != id:
                         id = idVendor
 
                 else:
-                    flashMessage = "No se actualizaron los datos ya que el ID o Nombre ya existen."
+                    flash("No se actualizaron los datos ya que el ID, nombre ó teléfono ya existen.", "error")
 
-                mysql.connection.commit()
                 cur.close()
-                flash(flashMessage, "success")
         else:
             flash("No has iniciado sesión.", "error")
             return redirect(url_for("index"))
+
     except Exception as error:
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
@@ -532,6 +534,7 @@ def updateOrder(id):
             # Obtener la orden original
             cur.execute("SELECT * FROM orders WHERE ID = %s", (id,))
             order_original = cur.fetchone()
+
             if not order_original:
                 flash("La orden no existe.", "error")
                 return redirect(url_for("ordersSection"))  # O a la vista de órdenes
@@ -650,8 +653,10 @@ def updateSale(id):
                 cur.execute("SELECT * FROM sales WHERE (ID_Sale = %s OR Date = %s) AND ID_Sale != %s", (idSale, date, id))
                 sqlValue = cur.fetchone()
 
-                if sqlValue is None: # Si no existe una venta con ese ID y fecha lo agrega
+                if sqlValue is None:
                     cur.execute("UPDATE sales SET ID_Sale = %s, Date = %s WHERE ID_Sale = %s", (idSale, date, id))
+                    mysql.connection.commit()
+                    cur.execute("UPDATE detail_sales SET ID_Sale = %s WHERE ID_Sale = %s",(idSale, id))
                     mysql.connection.commit()
                     cur.close()
                     if idSale != id:
@@ -746,7 +751,7 @@ def addSalesProducts():
                             totalQuantity = cur.fetchone()[0]
                             newTotalQuantity = int(totalQuantity) - int(productQuantity)
 
-                            cur.execute("INSERT INTO detail_sales (ID_Sale, ID_Product, Quantity, Price, Total) VALUES (1, %s, %s, %s, %s)", (indexProduct, productQuantity, productPrice, productTotal))
+                            cur.execute("INSERT INTO detail_sales (ID_Sale, ID_Product, Quantity, Price, Total) VALUES (%s, %s, %s, %s, %s)", (session["SaleNumber"], indexProduct, productQuantity, productPrice, productTotal))
                             mysql.connection.commit()
 
                             cur.execute("UPDATE products SET Quantity = %s WHERE ID_Product = %s", (newTotalQuantity, indexProduct))
@@ -763,37 +768,21 @@ def addSalesProducts():
         flash(f"Ocurrio un error: {error}.", "error")
     return redirect(url_for("detailSaleSection", id = session["SaleNumber"]))
 
-# Detail Sales (ADD PRODUCTS) Route
-@app.route('/addDetailSaleSection', methods=['POST'])
-def addDetailSaleSection():
+# All products sale Route
+@app.route("/allProductsSaleSection/<int:id>", methods=['GET', 'POST'])
+def allProductsSaleSection(id):
     try:
         if 'ID_User' in session:
-
-            if request.method == "POST":
-                idProduct = int(request.form["ID_Product"])
-                quantity = int(request.form["Cantidad"])
-                price = float(request.form["Precio"])
-                totalPrice = float(request.form["Total"])
-
+            if request.method == 'GET':
+                session.pop("SaleNumber", None)
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT Quantity FROM products WHERE ID_Product = %s", (idProduct,))
-                sqlValue = cur.fetchone()
-                saleQuantity = sqlValue[0]
-
-                if sqlValue is not None:
-                    if saleQuantity > 0 and quantity <= saleQuantity:
-                        cur.execute("INSERT INTO detail_sales (Id_Sale, ID_Product, Quantity, Price, Total) VALUES (%s, %s, %s, %s, %s)", (session["SaleNumber"], idProduct, quantity, price, totalPrice))
-                        mysql.connection.commit()
-                        saleQuantity = saleQuantity - quantity
-                        cur.execute("UPDATE products SET Quantity = %s WHERE ID_Product = %s ", (saleQuantity, idProduct))
-                        mysql.connection.commit()
-                        cur.close()
-                    else:
-                        flash("No se puede realizar la venta a falta de inventario.", "error")
-                        cur.close()
-                else:
-                    cur.close()
-                    flash("Error al obtener la información del producto.", "error")
+                cur.execute("SELECT detail_sales.ID_DetailSale, detail_sales.ID_Sale, products.Name, detail_sales.Quantity, detail_sales.Price, detail_sales.Total FROM detail_sales JOIN products ON detail_sales.ID_Product = products.ID_Product WHERE ID_SALE = %s", (id,))
+                sqlValue = cur.fetchall()
+                cur.execute("SELECT Active FROM sales WHERE ID_Sale = %s", (id,))
+                sqlValue2 = cur.fetchone()
+                cur.close()
+                session["SaleNumber"] = id
+                return render_template("allProductsSaleSection.html", allProductsSale = sqlValue, Active = sqlValue2[0])
 
         else:
             flash("No has iniciado sesión.", "error")
@@ -802,8 +791,6 @@ def addDetailSaleSection():
     except Exception as error:
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
-
-    return redirect(url_for("detailSaleSection", id = session["SaleNumber"]))
 
 # Delete Product of Sale Route
 @app.route('/deleteDetailSaleProduct/<int:id>', methods=['GET'])
@@ -828,7 +815,7 @@ def deleteDetailSaleProduct(id):
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
 
-    return redirect(url_for("detailSaleSection", id = session["SaleNumber"]))
+    return redirect(url_for("allProductsSaleSection", id = session["SaleNumber"]))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

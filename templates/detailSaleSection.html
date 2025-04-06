@@ -72,61 +72,15 @@
                     <tfoot>
                         <tr>
                             <td colspan="4" class="fw-bold">TOTAL GENERAL</td>
-                            <td class="text-success fw-bold" id="totalProductSales">$0</td>
+                            <td class="text-success fw-bold fs-3" id="totalProductSales">$0</td>
                             <!-- <td class="text-success"><strong>${{ totalSales }}</strong></td> -->
                         </tr>
                     </tfoot>
                 </table>
-                <div class="container d-flex justify-content-center"><button type="button" class="col-12 btn btn-success" id="sendProductSalesDataBtn">Vender todos los productos</button></div>
+                <div class="container d-flex justify-content-center"><button type="button" class="col-12 btn btn-success" id="sendProductSalesDataBtn" onclick="saleAllProducts()">Vender todos los productos</button></div>
             </div>
     {% if Activa == 'SI' %}
     </div>
-    <script>
-        const button = document.querySelector('#sendProductSalesDataBtn');
-        const table = document.querySelector('#tableBody');
-        let productsToSale = undefined;
-        const allproductsToSaleValue = [];
-
-        button.addEventListener('click', function () {
-            if (table.children.length > 0 ) {
-                console.log(table.children)
-                productsToSale = table.children;
-
-                for (let index = 0; index < productsToSale.length; index++) {
-                    const product = {name: productsToSale[index].children[1].innerHTML, quantity: productsToSale[index].children[2].innerHTML, price: productsToSale[index].children[3].innerHTML, total: productsToSale[index].children[4].innerHTML};
-                    allproductsToSaleValue.push(product)
-                }
-
-                fetch('/addSalesProducts', {headers : {'Content-Type' : 'application/json'}, method : 'POST',
-                    body : JSON.stringify( {
-                        'Lista' : allproductsToSaleValue
-                    })
-                })
-                .then(function (response){
-
-                    if(response.ok) {
-                        response.json()
-                        table.remove();
-                        document.getElementById("totalProductSales").innerText = "$0";
-                        alert("Venta realizada con éxito.")
-                        .then(function(response) {
-                            console.log(response);
-                            //Eliminar columnas de la tabla y poner mensaje con JS de que se registro la venta
-                        });
-                    }
-                    else {
-                        throw Error('Something went wrong');
-                    }
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-                console.log(allproductsToSaleValue)
-            }else{
-                alert("No ha agregado productos para vender.")
-            }
-        });
-    </script>
     <script>
         const form = document.getElementById("addDetailSaleForm");
 
@@ -173,9 +127,9 @@
                 let productSale = undefined
                 let totalPrice = 0;
 
-                newSaleProductData.innerHTML = '<button type="button" class="btn btn-danger" onclick="deleteProductSale(this)">Eliminar</button>'
+                newSaleProductData.innerHTML = '<button type="button" class="btn btn-danger" onclick="deleteProductSale(this)">Eliminar</button>';
                 newSaleProductData = newSaleProductRow.insertCell(1);
-                newSaleProductData.textContent = productName
+                newSaleProductData.textContent = productName;
 
                 newSaleProductData = newSaleProductRow.insertCell(2);
                 newSaleProductData.textContent = formData.get("Cantidad");
@@ -187,8 +141,7 @@
                 newSaleProductData.textContent = "$" + formData.get("Total");
 
                 for (let index = 0; index < tBodyRows.length; index++) {
-                    productSale = tBodyRows[index]
-                    productSale.children[4]
+                    productSale = tBodyRows[index];
                     tBodyDataCells.push(productSale.children[4].innerText);
                 }
 
@@ -199,7 +152,7 @@
 
                 totalProductSale.innerText = '$' + totalPrice.toFixed(2);
             }
-        })
+        });
     </script>
     {% endif %}
 

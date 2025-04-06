@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Productos vendidos{% endblock %}
+
+{% block body %}
+    <style onload="dynamicNavBar('/salesSection')"></style>
+        {% if allProductsSale %}
+            <div class="table-responsive">
+                <table class="table table-hover text-center" id="salesProductsTable">
+                    <thead class="table-success align-text-top">
+                        <tr>
+                            {% if Active == 'SI' %}
+                                <th>Eliminar Producto</th>
+                            {% endif %}
+                            <!-- <th>Clave de la venta</th> -->
+                            <th>Producto</th>
+                            <th>Cantidad Vendida</th>
+                            <th>Precio</th>
+                            <th>Total</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        {% for ID, ID_Sale, producto, cantidad, precio, total in allProductsSale %}
+                        <tr>
+                            {% if Active == 'SI' %}
+                                <td><form action="{{url_for('deleteDetailSaleProduct', id=ID)}}" onsubmit="return confirmActions('¿Eliminar el producto de la venta?')" method="get"><button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form></td>
+                            {% endif %}
+                            <!-- <td>{{ ID_Sale }}</td> -->
+                            <td>{{ producto }}</td>
+                            <td>{{ cantidad }}</td>
+                            <td>${{ precio }}</td>
+                            <td>${{ total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4" class="fw-bold" id="TotalSaleRow">TOTAL VENDIDO</td>
+                            <td class="text-success fw-bold fs-3" id="totalProductSales">$0</td>
+                            <!-- <td class="text-success"><strong>${{ totalSales }}</strong></td> -->
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            {% if Active == 'SI' %}
+                <script>
+                    let totalProductSale = document.getElementById("totalProductSales");
+
+                    if (totalProductSale.innerText == "$0") {
+                        let tBodyRows = document.getElementById("tableBody").children;
+                        let productSale = undefined;
+                        const tBodyDataCells = [];
+                        let totalPrice = 0;
+
+                        for (let index = 0; index < tBodyRows.length; index++) {
+                            productSale = tBodyRows[index];
+                            tBodyDataCells.push(productSale.children[4].innerText);
+                        }
+
+                        for (let number = 0; number < tBodyDataCells.length; number++) {
+                            productSale = tBodyDataCells[number].replace("$","");
+                            totalPrice += parseFloat(productSale);
+                        }
+
+                        totalProductSale.innerText = '$' + totalPrice.toFixed(2);
+                    }
+                </script>
+            {% else %}
+                <script>
+                    let totalProductSale2 = document.getElementById("totalProductSales");
+                    document.getElementById("TotalSaleRow").setAttribute("colspan","3")
+
+                    if (totalProductSale2.innerText == "$0") {
+                        let tBodyRows = document.getElementById("tableBody").children;
+                        let productSale = undefined;
+                        const tBodyDataCells = [];
+                        let totalPrice = 0;
+
+                        for (let index = 0; index < tBodyRows.length; index++) {
+                            productSale = tBodyRows[index]
+                            tBodyDataCells.push(productSale.children[3].innerText);
+                        }
+
+                        for (let number = 0; number < tBodyDataCells.length; number++) {
+                            productSale = tBodyDataCells[number].replace("$","");
+                            totalPrice += parseFloat(productSale);
+                        }
+
+                        totalProductSale2.innerText = '$' + totalPrice.toFixed(2);
+                    }
+                </script>
+            {% endif %}
+        {% else %}
+            <h3 class="fst-italic">No hay productos vendidos...</h3>
+        {% endif %}
+{% endblock %}

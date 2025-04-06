@@ -22,25 +22,26 @@
                         <td>{{ Fecha }}</td>
 
                         {% if Activada == 'SI' %}
-                            <form action="{{url_for('closeSale', id=ID)}}" method="get" onsubmit="return confirmActions('Seguro que desea cerrar la venta?\nYa NO podrá agregar ni eliminar productos.\nSOLO PODRÁ VISUALIZARLA.')">
-                                <td><button type="submit" class="btn btn-warning">Cerrar</button></td>
-                            </form>
+                            <td><form action="{{url_for('closeSale', id=ID)}}" method="get" onsubmit="return confirmActions('Seguro que desea cerrar la venta?\nYa NO podrá agregar ni eliminar productos.\nSOLO PODRÁ VISUALIZARLA.')"><button type="submit" class="btn btn-warning">Cerrar</button></td>
+                            </form></td>
 
-                            <form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
-                                <td><button type="submit" class="btn btn-info">Mirar</button></td>
-                            </form>
+                            <td><form action="{{url_for('allProductsSaleSection', id=ID)}}" method="get">
+                                <button type="submit" class="btn btn-info">Mirar</button>
+                            </form></td>
 
                             <td><button class="btn btn-primary" data-url="{{url_for('updateSale', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                            <form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
-                                <td><button type="submit" class="btn btn-success">Agregar</button></td>
-                            </form>
+                            <td><form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
+                                <button type="submit" class="btn btn-success">Agregar</button>
+                            </form></td>
                         {% else %}
-                        <td><button type="submit" class="btn btn-dark">Bloqueado</button></td>
-                        <td><button type="submit" class="btn btn-dark">Bloqueado</button></td>
-                        <form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
-                            <td><button type="submit" class="btn btn-success">Mirar venta</button></td>
-                        </form>
+                            <td><button class="btn btn-dark">Bloqueado</button></td>
+
+                            <td><form action="{{url_for('allProductsSaleSection', id=ID)}}" method="get">
+                                <button type="submit" class="btn btn-info">Mirar</button>
+                            </form></td>
+                            <td><button class="btn btn-dark">Bloqueado</button></td>
+                            <td><button class="btn btn-dark">Bloqueado</button></td>
                         {% endif %}
 
                     </tr>
