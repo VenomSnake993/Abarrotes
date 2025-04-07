@@ -135,13 +135,15 @@ def productsSection():
         if 'ID_User' in session:
             if request.method == "GET":
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT * FROM products")
+                cur.execute("SELECT P.ID_product, V.Name, P.Name, P.Cost, P.Price, P.Quantity, P.Expiration_Date, P.Description FROM products AS P INNER JOIN vendors AS V ON P.ID_Vendor = V.ID_Vendor")
                 sqlValue = cur.fetchall()
+                print(sqlValue)
                 cur.close()
                 return render_template("productsSection.html", allProducts=sqlValue)
         else:
             flash("No has iniciado sesión.", "error")
             return redirect(url_for("index"))
+
     except Exception as error:
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
@@ -152,6 +154,14 @@ def productsSection():
 def addProduct():
     try:
         if 'ID_User' in session:
+            if request.method == "GET":
+                cur = mysql.connection.cursor()
+                cur.execute("SELECT * FROM products")
+                sqlValue = cur.fetchall()
+                cur.execute("SELECT ID_Vendor, Name FROM vendors")
+                sqlValue2 = cur.fetchall()
+                cur.close()
+                return render_template("newProductSection.html", allProducts=sqlValue, allVendors = sqlValue2)
 
             if request.method == 'POST':
                 idProduct = int (request.form["ID"])
@@ -161,20 +171,22 @@ def addProduct():
                 # stock = int(request.form["Cantidad"])
                 date = request.form["Fecha"]
                 description = request.form["Descripcion"]
+                vendor = request.form["IDVendor"]
                 cur = mysql.connection.cursor()
                 cur.execute("SELECT ID_Product FROM products WHERE ID_Product = %s OR Name = %s", (idProduct, name))
                 sqlValue = cur.fetchone()
 
                 if sqlValue is None: # Si no existe un producto con ese ID o nombre lo agrega
+
                     if date == '':
-                        cur.execute("INSERT INTO products (ID_Product, Name, Cost, Price, Quantity, Description) VALUES (%s, %s, %s, %s, 0, %s)", (idProduct, name, cost, price, description))
+                        cur.execute("INSERT INTO products (ID_Product, Name, Cost, Price, Quantity, Description, ID_Vendor) VALUES (%s, %s, %s, %s, 0, %s, %s)", (idProduct, name, cost, price, description, vendor))
                     else:
-                        cur.execute("INSERT INTO products (ID_Product, Name, Cost, Price, Quantity, Expiration_Date, Description) VALUES (%s, %s, %s, %s, 0, %s, %s)", (idProduct, name, cost, price, date, description))
+                        cur.execute("INSERT INTO products (ID_Product, Name, Cost, Price, Quantity, Expiration_Date, Description, ID_Vendor) VALUES (%s, %s, %s, %s, 0, %s, %s, %s)", (idProduct, name, cost, price, date, description, vendor))
+
                     mysql.connection.commit()
                     cur.close()
-                    flash(f"Producto {name} agregado correctamente.", "success")
+                    flash(f"Producto \"{name}\" agregado correctamente.", "success")
                     return redirect(url_for("addProduct"))
-
                 else:
                     flash("El ID o Nombre del producto ya existe.", "error")
 
@@ -185,7 +197,6 @@ def addProduct():
     except Exception as error:
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
-    return render_template("newProductSection.html")
 
 # Delete Product Route
 @app.route('/deleteProduct/<int:id>', methods=['GET'])
@@ -220,15 +231,17 @@ def deleteProduct(id):
 # Update Product Route
 @app.route(('/updateProduct/<int:id>'), methods=['GET', 'POST'])
 def updateProduct(id):
-    try:
 
+    try:
         if 'ID_User' in session:
             if request.method == "GET":
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT * FROM products WHERE ID_Product = %s", (id,))
+                cur.execute("SELECT P.ID_product, V.Name, P.Name, P.Cost, P.Price, P.Quantity, P.Expiration_Date, P.Description FROM products AS P INNER JOIN vendors AS V ON P.ID_Vendor = V.ID_Vendor WHERE ID_Product = %s", (id,))
                 sqlValue = cur.fetchone()
+                cur.execute("SELECT ID_Vendor, Name FROM vendors")
+                sqlValue2 = cur.fetchall()
                 cur.close()
-                return render_template("updateProductSection.html", producto=sqlValue)
+                return render_template("updateProductSection.html", producto=sqlValue, allVendors = sqlValue2)
 
             if request.method == "POST":
                 idProduct = int (request.form["IDProducto"])
@@ -238,26 +251,28 @@ def updateProduct(id):
                 # stock = int(request.form["Cantidad"])
                 date = request.form["Fecha"]
                 description = request.form["Descripcion"]
+                vendor = request.form["IDVendor"]
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT ID_Product FROM products WHERE (ID_Product = %s OR Name = %s) AND ID_Product != %s", (idProduct, name,id))
+                cur.execute("SELECT ID_Product FROM products WHERE (ID_Product = %s OR Name = %s) AND ID_Product != %s", (idProduct, name, id))
 
-                sqlValue = cur.fetchone()
-                if sqlValue is None: # Si no existe un producto con ese ID o nombre actualiza todo
+                sqlValue3 = cur.fetchone()
+                if sqlValue3 is None: # Si no existe un producto con ese ID o nombre actualiza todo
                     if date == '':
-                        cur.execute("UPDATE products SET ID_Product = %s, Name = %s, Cost = %s, Price = %s, Expiration_Date = NULL, Description = %s WHERE ID_Product = %s", (idProduct, name, cost, price, description, id))
+                        cur.execute("UPDATE products SET ID_Product = %s, Name = %s, Cost = %s, Price = %s, Expiration_Date = NULL, Description = %s, ID_Vendor = %s WHERE ID_Product = %s", (idProduct, name, cost, price, description, vendor, id))
                     else:
-                        cur.execute("UPDATE products SET ID_Product = %s, Name = %s, Cost = %s, Price = %s, Expiration_Date = %s, Description = %s WHERE ID_Product = %s", (idProduct, name, cost, price, date, description, id))
+                        cur.execute("UPDATE products SET ID_Product = %s, Name = %s, Cost = %s, Price = %s, Expiration_Date = %s, Description = %s, ID_Vendor = %s WHERE ID_Product = %s", (idProduct, name, cost, price, date, description, vendor, id))
                     flashMessage = "Todos los campos del producto se actualizaron correctamente."
+                    category = "success"
                     id = idProduct
 
                 else:
                     if date == '':
-                        cur.execute("UPDATE products SET Cost = %s, Price = %s, Expiration_Date = NULL, Description = %s WHERE ID_Product = %s", (cost, price, description, id))
+                        cur.execute("UPDATE products SET Cost = %s, Price = %s, Expiration_Date = NULL, Description = %s, ID_Vendor = %s WHERE ID_Product = %s", (cost, price, description, vendor, id))
                     else:
-                        cur.execute("UPDATE products SET Cost = %s, Price = %s, Expiration_Date = %s, Description = %s WHERE ID_Product = %s", (cost, price, date, description, id))
+                        cur.execute("UPDATE products SET Cost = %s, Price = %s, Expiration_Date = %s, Description = %s, ID_Vendor = %s WHERE ID_Product = %s", (cost, price, date, description, vendor, id))
                     flashMessage = "No se actualizo el ID o Nombre por que ya existen."
 
-                    if idProduct != sqlValue[0]:
+                    if idProduct != sqlValue3[0]:
                         id = idProduct
 
                 mysql.connection.commit()
@@ -266,7 +281,7 @@ def updateProduct(id):
         else:
             flash("No has iniciado sesión.", "error")
             return redirect(url_for("index"))
-        
+
     except Exception as error:
         print(error)
         flash(f"Ocurrio un error: {error}.", "error")
@@ -483,13 +498,20 @@ def addOrder():
                 cur.execute("SELECT * FROM orders WHERE ID = %s", (idOrder,))
                 sqlValue = cur.fetchone()
 
+                cur.execute("SELECT P.`ID_Product`, P.`Name` FROM products AS P INNER JOIN vendors ON P.`ID_Vendor`= vendors.`ID_Vendor` WHERE vendors.ID_Vendor = %s AND P.ID_Product = %s", (idVendor, idProduct))
+                vendorProducts = cur.fetchone()
+                print(vendorsSection)
+
                 if sqlValue is None: # Si no existe una orden con ese ID lo agrega
-                    cur.execute("INSERT INTO orders (ID, ID_Vendor, ID_Product, Quantity, Unit_Cost, Cost, Date) VALUES (%s, %s, %s, %s, %s, %s, %s)", (idOrder, idVendor, idProduct, quantity, unitCost ,Totalcost, date))
-                    mysql.connection.commit()
-                    cur.execute("UPDATE products SET Quantity = Quantity + %s WHERE ID_Product = %s", (quantity, idProduct))
-                    mysql.connection.commit()
-                    cur.close()
-                    flash(f"Compra Número {idOrder} agregada correctamente.", "success")
+                    if vendorProducts != None: #Si esta en los productos del vendedor
+                        cur.execute("INSERT INTO orders (ID, ID_Vendor, ID_Product, Quantity, Unit_Cost, Cost, Date) VALUES (%s, %s, %s, %s, %s, %s, %s)", (idOrder, idVendor, idProduct, quantity, unitCost ,Totalcost, date))
+                        mysql.connection.commit()
+                        cur.execute("UPDATE products SET Quantity = Quantity + %s WHERE ID_Product = %s", (quantity, idProduct))
+                        mysql.connection.commit()
+                        cur.close()
+                        flash(f"Compra Número {idOrder} agregada correctamente.", "success")
+                    else:
+                        flash("El producto a comprar no lo distribuye el proveedor seleccionado.", "error")
                 else:
                     flash("Ya existe una compra con esa clave o fecha.", "error")
         else:

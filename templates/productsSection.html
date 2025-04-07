@@ -8,6 +8,7 @@
                 <thead class="table-primary align-text-top">
                     <tr>
                         <th>Clave del producto</th>
+                        <th>Proveedor</th>
                         <th>Nombre</th>
                         <th>Costo</th>
                         <th>Precio</th>
@@ -18,9 +19,11 @@
                         <th>Eliminar producto</th>
                     </tr>
                 </thead>
-                {% for ID, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion in allProducts %}
+                {% for ID, Proveedor, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion in allProducts %}
+                <tbody>
                     <tr>
                         <td>{{ ID }}</td>
+                        <td>{{ Proveedor }}</td>
                         <td>{{ Nombre }}</td>
                         <td>${{ Costo }}</td>
                         <td>${{ Precio }}</td>
@@ -42,9 +45,9 @@
 
                         <td><form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')"> <button type="submit" class="btn btn-danger">Eliminar</button>
                         </form></td>
-                        
 
                     </tr>
+                </tbody>
                 {% endfor %}
             </table>
         </div>

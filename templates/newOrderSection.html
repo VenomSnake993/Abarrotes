@@ -21,8 +21,8 @@
                     <select class="col-12 p-1" name="IDVendor" id="IDVendor" required>
                         {% if allIDVendors %}
                             <option value="" disabled selected>Selecciona una opción</option>
-                            {% for IDs in allIDVendors %}
-                                <option value="{{ IDs[0] }}">{{ IDs[1] }}</option>
+                            {% for vendor in allIDVendors %}
+                                <option value="{{ vendor[0] }}">{{ vendor[1] }}</option>
                             {% endfor %}
                         {% else %}
                             <option value="" disabled selected>No hay proveedores registrados</option>

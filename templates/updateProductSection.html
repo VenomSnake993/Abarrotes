@@ -30,7 +30,7 @@
             {% if producto %}
                 <h1 class="text-center">Actualizar datos del producto</h1>
                 <h4 class="text-center fst-italic">Ingrese los nuevos datos del producto</h4>
-                {% set ID, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion = producto %}
+                {% set ID, Proveedor, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion = producto %}
 
                 <form class="was-validated" action="{{url_for('updateProduct', id=ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos del producto?')">
                     
@@ -38,6 +38,24 @@
                         <label for="IDProducto" class="form-label">Clave del producto:</label>
                         <input class="form-control" type="text" name="IDProducto" id="IDProducto" value="{{ID}}" placeholder="Introduzca la clave del producto..." pattern="^[0-9]+$" title="Solo se permiten números" required>
                         <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="IDVendor" class="form-label">Nombre del proveedor:</label>
+                        <select class="col-12 p-1" name="IDVendor" id="IDVendor" required>
+                            {% if allVendors %}
+                                <option value="" disabled selected>Selecciona una opción</option>
+                                {% for vendor in allVendors %}
+                                    <option value="{{ vendor[0] }}">{{ vendor[1] }}</option>
+                                    {% if Proveedor == vendor[1] %}
+                                        <script>document.getElementById("IDVendor").value="{{vendor[0]}}"</script>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <option value="" disabled selected>No hay proveedores registrados</option>
+                            {% endif %}
+                        </select>
+                        <div class="invalid-feedback">Seleccione un proveedor de la lista.</div>
                     </div>
 
                     <div class="mb-3">

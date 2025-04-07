@@ -16,6 +16,21 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="IDVendor" class="form-label">Nombre del proveedor:</label>
+                    <select class="col-12 p-1" name="IDVendor" id="IDVendor" required>
+                        {% if allVendors %}
+                            <option value="" disabled selected>Selecciona una opción</option>
+                            {% for vendor in allVendors %}
+                                <option value="{{ vendor[0] }}">{{ vendor[1] }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="" disabled selected>No hay proveedores registrados</option>
+                        {% endif %}
+                    </select>
+                    <div class="invalid-feedback">Seleccione un proveedor de la lista.</div>
+                </div>
+
+                <div class="mb-3">
                     <label for="Nombre" class="form-label">Producto:</label>
                     <input type="text" class="form-control" id="Nombre" name="Nombre" placeholder="Introduzca el nombre del producto..." pattern="^[ a-zA-ZáéíóúÁÉÍÓÚñÑ0-9.]+$" title="Solo se permiten letras, números y puntos" required>
                     <div class="invalid-feedback">Escriba el nombre en un formato válido.</div>
