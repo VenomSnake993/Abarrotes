@@ -459,7 +459,7 @@ def ordersSection():
         if 'ID_User' in session:
             if request.method == "GET":
                 cur = mysql.connection.cursor()
-                cur.execute("SELECT orders.ID, products.Name, vendors.Name, orders.Quantity, orders.Unit_Cost, orders.Cost, orders.Date FROM orders JOIN vendors ON orders.ID_Vendor = vendors.ID_Vendor JOIN products ON orders.ID_Product = products.ID_Product")
+                cur.execute("SELECT orders.ID, products.Name, vendors.Name, orders.Quantity, orders.Unit_Cost, orders.Cost, orders.Date FROM orders JOIN vendors ON orders.ID_Vendor = vendors.ID_Vendor JOIN products ON orders.ID_Product = products.ID_Product ORDER BY orders.ID")
                 sqlValue = cur.fetchall()
                 cur.close()
                 return render_template("ordersSection.html", allOrders=sqlValue)

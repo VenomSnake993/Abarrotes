@@ -3,6 +3,22 @@
 
 {% block body %}
     {% if allProducts %}
+    <!-- <style>
+        *{
+            box-sizing: border-box;
+            outline: 1px solid red;
+        }
+    </style> -->
+        <div class="d-flex justify-content-end align-items-center">
+
+            <div class="col-6 p-1 pb-2">
+                <input type="text" id="searchInputName" name="searchInputName" onkeyup="searchTableValue('searchInputName', 2)" class="form-control" placeholder="🔍 Buscar por nombre...">
+            </div>
+            <div class="col-6 p-1 pb-2">
+                <input type="text" id="searchInputVendor" name="searchInputVendor" onkeyup="searchTableValue('searchInputVendor', 1)" class="form-control" placeholder="🔍 Buscar por proveedor...">
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-hover text-center">
                 <thead class="table-primary align-text-top">
@@ -19,36 +35,34 @@
                         <th>Eliminar producto</th>
                     </tr>
                 </thead>
-                {% for ID, Proveedor, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion in allProducts %}
-                <tbody>
-                    <tr>
-                        <td>{{ ID }}</td>
-                        <td>{{ Proveedor }}</td>
-                        <td>{{ Nombre }}</td>
-                        <td>${{ Costo }}</td>
-                        <td>${{ Precio }}</td>
-                        <td>{{ Cantidad }}</td>
+                <tbody id="tBody">
+                    {% for ID, Proveedor, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion in allProducts %}
+                        <tr>
+                            <td>{{ ID }}</td>
+                            <td>{{ Proveedor }}</td>
+                            <td>{{ Nombre }}</td>
+                            <td>${{ Costo }}</td>
+                            <td>${{ Precio }}</td>
+                            <td>{{ Cantidad }}</td>
 
-                        {% if Fecha %}
-                            <td>{{ Fecha }}</td>
-                        {% else %}
-                            <td>Sin fecha de caducidad</td>
-                        {% endif %}
+                            {% if Fecha %}
+                                <td>{{ Fecha }}</td>
+                            {% else %}
+                                <td>Sin fecha de caducidad</td>
+                            {% endif %}
 
-                        {% if Descripcion %}
-                            <td>{{ Descripcion }}</td>
-                        {% else %}
-                            <td>Sin descripción</td>
-                        {% endif %}
+                            {% if Descripcion %}
+                                <td>{{ Descripcion }}</td>
+                            {% else %}
+                                <td>Sin descripción</td>
+                            {% endif %}
 
-                        <td><button class="btn btn-primary" data-url="{{url_for('updateProduct', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                            <td><button class="btn btn-primary" data-url="{{url_for('updateProduct', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                        <td><form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')"> <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form></td>
-
-                    </tr>
+                            <td><form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')"> <button type="submit" class="btn btn-danger">Eliminar</button></form></td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
-                {% endfor %}
             </table>
         </div>
     {% else %}

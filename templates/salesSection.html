@@ -4,6 +4,11 @@
 {% block body %}
 <style onload="dynamicNavBar('/salesSection')"></style>
     {% if allSales %}
+        <div class="d-flex justify-content-end align-items-center">
+            <div class="col-3 p-1 pb-2">
+                <input type="text" id="searchInputSalesDate" name="searchInputSalesDate" onkeyup="searchTableValue('searchInputSalesDate', 1)" class="form-control" placeholder="🔍 Buscar por fecha...">
+            </div>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover text-center">
                 <thead class="table-primary align-text-top">
@@ -16,36 +21,38 @@
                         <th>Agregar productos</th>
                     </tr>
                 </thead>
-                {% for ID, Fecha, Activada in allSales  %}
-                    <tr>
-                        <td>{{ ID }}</td>
-                        <td>{{ Fecha }}</td>
+                <tbody id="tBody">
+                    {% for ID, Fecha, Activada in allSales  %}
+                        <tr>
+                            <td>{{ ID }}</td>
+                            <td>{{ Fecha }}</td>
 
-                        {% if Activada == 'SI' %}
-                            <td><form action="{{url_for('closeSale', id=ID)}}" method="get" onsubmit="return confirmActions('Seguro que desea cerrar la venta?\nYa NO podrá agregar ni eliminar productos.\nSOLO PODRÁ VISUALIZARLA.')"><button type="submit" class="btn btn-warning">Cerrar</button></td>
-                            </form></td>
+                            {% if Activada == 'SI' %}
+                                <td><form action="{{url_for('closeSale', id=ID)}}" method="get" onsubmit="return confirmActions('Seguro que desea cerrar la venta?\nYa NO podrá agregar ni eliminar productos.\nSOLO PODRÁ VISUALIZARLA.')"><button type="submit" class="btn btn-warning">Cerrar</button></td>
+                                </form></td>
 
-                            <td><form action="{{url_for('allProductsSaleSection', id=ID)}}" method="get">
-                                <button type="submit" class="btn btn-info">Mirar</button>
-                            </form></td>
+                                <td><form action="{{url_for('allProductsSaleSection', id=ID)}}" method="get">
+                                    <button type="submit" class="btn btn-info">Mirar</button>
+                                </form></td>
 
-                            <td><button class="btn btn-primary" data-url="{{url_for('updateSale', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                                <td><button class="btn btn-primary" data-url="{{url_for('updateSale', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                            <td><form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
-                                <button type="submit" class="btn btn-success">Agregar</button>
-                            </form></td>
-                        {% else %}
-                            <td><button class="btn btn-dark">Bloqueado</button></td>
+                                <td><form action="{{url_for('detailSaleSection', id=ID)}}" method="get">
+                                    <button type="submit" class="btn btn-success">Agregar</button>
+                                </form></td>
+                            {% else %}
+                                <td><button class="btn btn-dark">Bloqueado</button></td>
 
-                            <td><form action="{{url_for('allProductsSaleSection', id=ID)}}" method="get">
-                                <button type="submit" class="btn btn-info">Mirar</button>
-                            </form></td>
-                            <td><button class="btn btn-dark">Bloqueado</button></td>
-                            <td><button class="btn btn-dark">Bloqueado</button></td>
-                        {% endif %}
+                                <td><form action="{{url_for('allProductsSaleSection', id=ID)}}" method="get">
+                                    <button type="submit" class="btn btn-info">Mirar</button>
+                                </form></td>
+                                <td><button class="btn btn-dark">Bloqueado</button></td>
+                                <td><button class="btn btn-dark">Bloqueado</button></td>
+                            {% endif %}
 
-                    </tr>
-                {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     {% else %}

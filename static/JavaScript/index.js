@@ -4,7 +4,7 @@ confirmActions = function (message) {
 
 dynamicNavBar = function (url) {
     let navBarImageLink = document.getElementById("navigationBarContainer").children[0];
-    navBarImageLink.setAttribute("href", url)
+    navBarImageLink.setAttribute("href", url);
     // console.log(navBarImageLink.getAttribute("href"))
 }
 
@@ -16,7 +16,27 @@ openUpdateProductWindow = function (button) {
     } else {
         window.open(url, '_blank', ',menubar=0, location=yes, resizable=0, scrollbars=1, status=1, titlebar=1, width=640,height=600');
     }
+}
 
+searchTableValue = function (inputName, cellNumber) {
+    const input = document.getElementById(inputName).value.toLowerCase();
+    const tBody = document.getElementById("tBody");
+    const rows = tBody.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+        const productNameCell = rows[i].getElementsByTagName("td")[cellNumber];
+        console.log(productNameCell);
+
+        if (productNameCell) {
+            const productName = productNameCell.innerText.toLowerCase();
+
+            if (productName.includes(input)) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
 }
 
 getPriceProduct = function () {
@@ -178,16 +198,16 @@ saleAllProducts = function () {
             .then(function (response) {
 
                 if (response.ok) {
-                    response.json()
-                    table.remove();
+                    response.json();
+                    table.innerHTML = "";
                     document.getElementById("totalProductSales").innerText = "$0";
-                    alert("Venta realizada con éxito.")
-                        .then(function (response) {
-                            console.log(response);
-                        });
+                    alert("Venta realizada con éxito.");
+                        // .then(function (response) {
+                        //     console.log(response);
+                        // });
                 }
                 else {
-                    throw Error('Something went wrong');
+                    throw Error('Algo salío mal.');
                 }
             })
             .catch(function (error) {

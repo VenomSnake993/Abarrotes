@@ -2,8 +2,20 @@
 {% block title %}Compras{% endblock %}
 
 {% block body %}
-<style onload="dynamicNavBar('/ordersSection')"></style>
+    <style onload="dynamicNavBar('/ordersSection')"></style>
     {% if allOrders %}
+        <div class="d-flex justify-content-end align-items-center">
+            <div class="col-4 p-1 pb-2">
+                <input type="text" id="searchInputVendor" name="searchInputVendor" onkeyup="searchTableValue('searchInputVendor', 1)" class="form-control" placeholder="🔍 Buscar por proveedor...">
+            </div>
+            <div class="col-4 p-1 pb-2">
+                <input type="text" id="searchInputProductName" name="searchInputProductName" onkeyup="searchTableValue('searchInputProductName', 2)" class="form-control" placeholder="🔍 Buscar por producto...">
+            </div>
+            <div class="col-4 p-1 pb-2">
+                <input type="text" id="searchInputVendorsDate" name="searchInputVendorsDate" onkeyup="searchTableValue('searchInputVendorsDate', 6)" class="form-control" placeholder="🔍 Buscar por fecha...">
+            </div>
+        </div>
+
         <div class="table-responsive">
             <table class="table table-hover text-center">
                 <thead class="table-primary align-text-top">
@@ -19,24 +31,26 @@
                         <th>Eliminar compra</th>
                     </tr>
                 </thead>
-                {% for ID, ID_Proveedor, ID_Producto, Cantidad, CostoPieza, CostoTotal, Fecha in allOrders  %}
-                    <tr>
-                        <td>{{ ID }}</td>
-                        <td>{{ ID_Producto }}</td>
-                        <td>{{ ID_Proveedor }}</td>
-                        <td>{{ Cantidad }}</td>
-                        <td>${{ CostoPieza }}</td>
-                        <td>${{ CostoTotal }}</td>
-                        <td>{{ Fecha }}</td>
+                <tbody id="tBody">
+                    {% for ID, ID_Proveedor, ID_Producto, Cantidad, CostoPieza, CostoTotal, Fecha in allOrders  %}
+                        <tr>
+                            <td>{{ ID }}</td>
+                            <td>{{ ID_Producto }}</td>
+                            <td>{{ ID_Proveedor }}</td>
+                            <td>{{ Cantidad }}</td>
+                            <td>${{ CostoPieza }}</td>
+                            <td>${{ CostoTotal }}</td>
+                            <td>{{ Fecha }}</td>
 
-                        <td><button class="btn btn-primary" data-url="{{url_for('updateOrder', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                            <td><button class="btn btn-primary" data-url="{{url_for('updateOrder', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                        <td><form action="{{url_for('deleteOrder', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar la compra {{ID}} de la lista de compras?')"><button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form></td>
-                        
+                            <td><form action="{{url_for('deleteOrder', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar la compra {{ID}} de la lista de compras?')"><button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form></td>
+                            
 
-                    </tr>
-                {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     {% else %}
