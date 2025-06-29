@@ -42,9 +42,9 @@
                             <td>${{ CostoTotal }}</td>
                             <td>{{ Fecha }}</td>
 
-                            <td><button class="btn btn-primary" data-url="{{url_for('updateOrder', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                            <td><button class="btn btn-primary" data-url="{{url_for('updateOrder', oldIdOrder = ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                            <td><form action="{{url_for('deleteOrder', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar la compra {{ID}} de la lista de compras?')"><button type="submit" class="btn btn-danger">Eliminar</button>
+                            <td><form action="{{url_for('deleteOrder', idOrder = ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar la compra número {{ID}} de la lista de compras?')"><button type="submit" class="btn btn-danger">Eliminar</button>
                             </form></td>
                             
 

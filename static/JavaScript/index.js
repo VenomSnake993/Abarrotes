@@ -1,15 +1,13 @@
-confirmActions = function (message) {
-    return confirm(message);
-}
+const confirmActions = message => confirm(message);
 
-dynamicNavBar = function (url) {
-    let navBarImageLink = document.getElementById("navigationBarContainer").children[0];
+const dynamicNavBar = url => {
+    const navBarImageLink = document.getElementById("navigationBarContainer").children[0];
     navBarImageLink.setAttribute("href", url);
     // console.log(navBarImageLink.getAttribute("href"))
 }
 
-openUpdateProductWindow = function (button) {
-    let url = button.getAttribute("data-url");
+const openUpdateProductWindow = (button) => {
+    const url = button.getAttribute("data-url");
 
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
         window.open(url, '_self', ',menubar=0, location=yes, resizable=0, scrollbars=1, status=1, titlebar=1')
@@ -18,7 +16,7 @@ openUpdateProductWindow = function (button) {
     }
 }
 
-searchTableValue = function (inputName, cellNumber) {
+const searchTableValue = (inputName, cellNumber) => {
     const input = document.getElementById(inputName).value.toLowerCase();
     const tBody = document.getElementById("tBody");
     const rows = tBody.getElementsByTagName("tr");
@@ -39,11 +37,10 @@ searchTableValue = function (inputName, cellNumber) {
     }
 }
 
-getPriceProduct = function () {
-    let productSelect = document.querySelector("#ID_Product");
-    let selectedOption = productSelect.selectedOptions[0];
-    // console.log(productSelect)
-    // console.log(selectedOption)
+const getPriceProduct = () => {
+    const productSelect = document.querySelector("#ID_Product");
+    const selectedOption = productSelect.selectedOptions[0];
+
     if (!selectedOption || selectedOption.disabled) {
         return;
     }
@@ -64,7 +61,7 @@ getPriceProduct = function () {
     }
 }
 
-calculateTotalPrice = function () {
+const calculateTotalPrice = () => {
     let productQuantity = document.getElementById("Cantidad").value;
     let productID = document.getElementById("ID_Product").value;
 
@@ -76,7 +73,7 @@ calculateTotalPrice = function () {
     }
 }
 
-calculateTotalCost = function () {
+const calculateTotalCost = () => {
     let productQuantity = document.getElementById("Cantidad").value;
     let productCost = document.getElementById("CostoUnidad").value;
 
@@ -89,7 +86,7 @@ calculateTotalCost = function () {
     }
 }
 
-deleteProductSale = function (Id) {
+const deleteProductSale = Id => {
     let row = Id.parentNode.parentNode;
     let tableProductSales = document.getElementById("salesProductsTable");
     let productSelect = document.querySelector("#ID_Product");
@@ -173,7 +170,7 @@ deleteProductSale = function (Id) {
     }
 }
 
-saleAllProducts = function () {
+const saleAllProducts = () => {
     const table = document.querySelector('#tableBody');
     let productsToSale = undefined;
     const allproductsToSaleValue = [];

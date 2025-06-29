@@ -32,13 +32,13 @@
                 <h4 class="text-center fst-italic">Ingrese los nuevos datos del producto</h4>
                 {% set ID, Proveedor, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion = producto %}
 
-                <form class="was-validated" action="{{url_for('updateProduct', id=ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos del producto?')">
+                <form class="was-validated" action="{{url_for('updateProduct', idProduct = ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos del producto?')">
                     
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="IDProducto" class="form-label">Clave del producto:</label>
                         <input class="form-control" type="text" name="IDProducto" id="IDProducto" value="{{ID}}" placeholder="Introduzca la clave del producto..." pattern="^[0-9]+$" title="Solo se permiten números" required>
                         <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
-                    </div>
+                    </div> -->
 
                     <div class="mb-3">
                         <label for="IDVendor" class="form-label">Nombre del proveedor:</label>
@@ -66,13 +66,13 @@
 
                     <div class="mb-3">
                         <label for="Costo" class="form-label">Costo:</label>
-                        <input class="form-control" type="text" name="Costo" id="Costo" value="{{Costo}}" placeholder="Introduzca el costo del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" required>
+                        <input class="form-control" type="text" name="Costo" id="Costo" value="{{Costo}}" placeholder="Introduzca el costo del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" onchange="(this.value = parseFloat(this.value).toFixed(2))" required>
                         <div class="invalid-feedback">Escriba el costo en un formato válido.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="Precio" class="form-label">Precio:</label>
-                        <input class="form-control" type="text" name="Precio" id="Precio" value="{{Precio}}" placeholder="Introduzca el precio del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" required>
+                        <input class="form-control" type="text" name="Precio" id="Precio" value="{{Precio}}" placeholder="Introduzca el precio del producto..." pattern="^[0-9]+(\.[0-9]{1,2})?$" title="Solo se permiten números y hasta dos decimales" onchange="(this.value = parseFloat(this.value).toFixed(2))" required>
                         <div class="invalid-feedback">Escriba el precio en un formato válido.</div>
                     </div>
 

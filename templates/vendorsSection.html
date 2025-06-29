@@ -20,7 +20,7 @@
             <table class="table table-hover text-center">
                 <thead class="table-primary align-text-top">
                     <tr>
-                        <th>Clave del proveedor</th>
+                        <th class="d-none">Clave del proveedor</th>
                         <th>Nombre</th>
                         <th>Número</th>
                         <th>Día de visita</th>
@@ -31,14 +31,14 @@
                 <tbody id="tBody">
                     {% for ID, Nombre, Numero, Dia in allVendors %}
                         <tr>
-                            <td>{{ ID }}</td>
+                            <td class="d-none">{{ ID }}</td>
                             <td>{{ Nombre }}</td>
                             <td>+52 {{ Numero }}</td>
                             <td>{{ Dia }}</td>
 
-                            <td><button class="btn btn-primary" data-url="{{url_for('updateVendor', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                            <td><button class="btn btn-primary" data-url="{{url_for('updateVendor', idVendor = ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                            <td><form action="{{url_for('deleteVendor', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de proveedores?')"><button type="submit" class="btn btn-danger">Eliminar</button>
+                            <td><form action="{{url_for('deleteVendor', idVendor = ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de proveedores?')"><button type="submit" class="btn btn-danger">Eliminar</button>
                             </form></td>
                         </tr>
                     {% endfor %}

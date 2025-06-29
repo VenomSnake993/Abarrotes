@@ -11,54 +11,54 @@
     {% endblock %}
 </head>
 <body>
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" id="navigationBar">
-            <div class="container-fluid" id="navigationBarContainer">
-                <a href="/productsSection"><img src="{{ url_for('static', filename = 'Images/icon.webp') }}" style="width:40px;" class="rounded-pill navbar-brand" alt="Logo"></a>
-                <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Productos</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/addProduct">Agregar nuevo producto</a></li>
-                                <li><a class="dropdown-item" href="/productsSection">Ver lista de productos</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Proveedores</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/addVendor">Agregar nuevo proveedor</a></li>
-                                <li><a class="dropdown-item" href="/vendorsSection">Ver lista de proveedores</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Compras</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/addOrder">Agregar nueva compra</a></li>
-                                <li><a class="dropdown-item" href="/ordersSection">Ver lista de compras</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Ventas</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/addSale">Agregar nueva Venta</a></li>
-                                <li><a class="dropdown-item" href="/salesSection">Ver lista de Ventas</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/userProfile">Perfíl</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/logout">Cerrar sesión</a>
-                        </li>
-    
-                    </ul>
-                </div>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark" id="navigationBar">
+        <div class="container-fluid" id="navigationBarContainer">
+            <a href="/productsSection"><img src="{{ url_for('static', filename = 'Images/icon.webp') }}" style="width:40px;" class="rounded-pill navbar-brand" alt="Logo"></a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Productos</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/addProduct">Agregar nuevo producto</a></li>
+                            <li><a class="dropdown-item" href="/productsSection">Ver lista de productos</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Proveedores</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/addNewVendor">Agregar nuevo proveedor</a></li>
+                            <li><a class="dropdown-item" href="/vendorsSection">Ver lista de proveedores</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Compras</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/addOrder">Agregar nueva compra</a></li>
+                            <li><a class="dropdown-item" href="/ordersSection">Ver lista de compras</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Ventas</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/addSale">Agregar nueva Venta</a></li>
+                            <li><a class="dropdown-item" href="/salesSection">Ver lista de Ventas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/userProfile">Perfíl</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
+
+                </ul>
             </div>
-        </nav>
-        {% block content %}
+        </div>
+    </nav>
+    {% block content %}
         <div class="container-fluid my-2 justify-content-start position-fixed">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}

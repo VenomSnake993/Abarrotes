@@ -3,61 +3,64 @@
 
 {% block body %}
     <style onload="dynamicNavBar('/salesSection')"></style>
+
         {% if allProductsSale %}
             <div class="table-responsive">
+
                 <table class="table table-hover text-center" id="salesProductsTable">
                     <thead class="table-success align-text-top">
                         <tr>
                             {% if Active == 'SI' %}
                                 <th>Eliminar Producto</th>
                             {% endif %}
-                            <!-- <th>Clave de la venta</th> -->
                             <th>Producto</th>
                             <th>Cantidad Vendida</th>
                             <th>Precio</th>
                             <th>Total</th>
-
                         </tr>
                     </thead>
+
                     <tbody id="tableBody">
                         {% for ID, ID_Sale, producto, cantidad, precio, total in allProductsSale %}
-                        <tr>
-                            {% if Active == 'SI' %}
-                                <td><form action="{{url_for('deleteDetailSaleProduct', id=ID)}}" onsubmit="return confirmActions('¿Eliminar el producto de la venta?')" method="get"><button type="submit" class="btn btn-danger">Eliminar</button>
-                                </form></td>
-                            {% endif %}
-                            <!-- <td>{{ ID_Sale }}</td> -->
-                            <td>{{ producto }}</td>
-                            <td>{{ cantidad }}</td>
-                            <td>${{ precio }}</td>
-                            <td>${{ total }}</td>
-                        </tr>
+                            <tr>
+                                {% if Active == 'SI' %}
+                                    <td><form action="{{url_for('deleteDetailSaleProduct', idProduct = ID)}}" onsubmit="return confirmActions('¿Eliminar el producto de la venta?')" method="get"><button type="submit" class="btn btn-danger">Eliminar</button>
+                                    </form></td>
+                                {% endif %}
+                                <td>{{ producto }}</td>
+                                <td>{{ cantidad }}</td>
+                                <td>${{ precio }}</td>
+                                <td>${{ total }}</td>
+                            </tr>
                         {% endfor %}
                     </tbody>
+
                     <tfoot>
                         <tr>
                             <td colspan="4" class="fw-bold" id="TotalSaleRow">TOTAL VENDIDO</td>
                             <td class="text-success fw-bold fs-3" id="totalProductSales">$0</td>
-                            <!-- <td class="text-success"><strong>${{ totalSales }}</strong></td> -->
                         </tr>
                     </tfoot>
                 </table>
             </div>
+
             {% if Active == 'SI' %}
                 <script>
-                    let totalProductSale = document.getElementById("totalProductSales");
+                    let totalProductSale = document.querySelector("#totalProductSales");
 
-                    if (totalProductSale.innerText == "$0") {
-                        let tBodyRows = document.getElementById("tableBody").children;
-                        let productSale = undefined;
+                    if (totalProductSale.innerText) { //Si es "true" se puede realizar la eliminación.
+                        let tBodyRows = document.querySelector("#tableBody").children;
+                        let productSale = "";
                         const tBodyDataCells = [];
                         let totalPrice = 0;
 
+                        // Guarda el valor total de la venta de los productos en una lista.
                         for (let index = 0; index < tBodyRows.length; index++) {
                             productSale = tBodyRows[index];
                             tBodyDataCells.push(productSale.children[4].innerText);
                         }
 
+                        // Convierte las cantidades a float.
                         for (let number = 0; number < tBodyDataCells.length; number++) {
                             productSale = tBodyDataCells[number].replace("$","");
                             totalPrice += parseFloat(productSale);
@@ -68,20 +71,22 @@
                 </script>
             {% else %}
                 <script>
-                    let totalProductSale2 = document.getElementById("totalProductSales");
+                    let totalProductSale2 = document.querySelector("#totalProductSales");
                     document.getElementById("TotalSaleRow").setAttribute("colspan","3")
 
-                    if (totalProductSale2.innerText == "$0") {
+                    if (totalProductSale2.innerText) {
                         let tBodyRows = document.getElementById("tableBody").children;
-                        let productSale = undefined;
+                        let productSale = "";
                         const tBodyDataCells = [];
                         let totalPrice = 0;
 
+                        // Guarda el valor total de la venta de los productos en una lista.
                         for (let index = 0; index < tBodyRows.length; index++) {
-                            productSale = tBodyRows[index]
+                            productSale = tBodyRows[index];
                             tBodyDataCells.push(productSale.children[3].innerText);
                         }
 
+                        // Convierte las cantidades a float.
                         for (let number = 0; number < tBodyDataCells.length; number++) {
                             productSale = tBodyDataCells[number].replace("$","");
                             totalPrice += parseFloat(productSale);
@@ -92,6 +97,6 @@
                 </script>
             {% endif %}
         {% else %}
-            <h3 class="fst-italic">No hay productos vendidos...</h3>
+            <h3 class="fst-italic">No hay productos vendidos en esta venta...</h3>
         {% endif %}
 {% endblock %}

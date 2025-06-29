@@ -23,7 +23,7 @@
             <table class="table table-hover text-center">
                 <thead class="table-primary align-text-top">
                     <tr>
-                        <th>Clave del producto</th>
+                        <th class="d-none">Clave del producto</th>
                         <th>Proveedor</th>
                         <th>Nombre</th>
                         <th>Costo</th>
@@ -38,7 +38,7 @@
                 <tbody id="tBody">
                     {% for ID, Proveedor, Nombre, Costo, Precio, Cantidad, Fecha, Descripcion in allProducts %}
                         <tr>
-                            <td>{{ ID }}</td>
+                            <td class="d-none">{{ ID }}</td>
                             <td>{{ Proveedor }}</td>
                             <td>{{ Nombre }}</td>
                             <td>${{ Costo }}</td>
@@ -57,9 +57,9 @@
                                 <td>Sin descripción</td>
                             {% endif %}
 
-                            <td><button class="btn btn-primary" data-url="{{url_for('updateProduct', id=ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
+                            <td><button class="btn btn-primary" data-url="{{url_for('updateProduct', idProduct = ID)}}" onclick="openUpdateProductWindow(this)">Actualizar</button></td>
 
-                            <td><form action="{{url_for('deleteProduct', id=ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')"> <button type="submit" class="btn btn-danger">Eliminar</button></form></td>
+                            <td><form action="{{url_for('deleteProduct', idProduct = ID)}}" method="get" onsubmit="return confirmActions('¿Eliminar {{Nombre}} de la lista de productos?')"> <button type="submit" class="btn btn-danger">Eliminar</button></form></td>
                         </tr>
                     {% endfor %}
                 </tbody>

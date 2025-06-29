@@ -32,7 +32,7 @@
                 <h4 class="text-center fst-italic">Ingrese los nuevos datos de la compra</h4>
                 {% set ID, ID_Proveedor, ID_Producto, Cantidad, Costo, Fecha, CostoUnidad = compra %}
 
-                <form class="was-validated" action="{{url_for('updateOrder', id=ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos de la compra?')">
+                <form class="was-validated" action="{{url_for('updateOrder', oldIdOrder = ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos de la compra?')">
                     
                     <div class="mb-3">
                         <label for="ID" class="form-label">Clave de la compra:</label>

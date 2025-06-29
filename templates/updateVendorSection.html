@@ -32,13 +32,13 @@
                 <h4 class="text-center fst-italic">Ingrese los nuevos datos del proveedor</h4>
                 {% set ID, Nombre, Numero, Dia = proveedor %}
 
-                <form class="was-validated" action="{{url_for('updateVendor', id=ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos del proveedor?')">
+                <form class="was-validated" action="{{url_for('updateVendor', idVendor = ID)}}" method="post" onsubmit="return confirmActions('¿Actualizar los datos del proveedor?')">
                     
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="IDVendor" class="form-label">Clave del proveedor:</label>
                         <input class="form-control" type="text" name="IDVendor" id="IDVendor" value="{{ID}}" pattern="^[0-9]+$" title="Solo se permiten números" placeholder="Introduzca la clave del proveedor..." required>
                         <div class="invalid-feedback">Escriba la clave en un formato válido.</div>
-                    </div>
+                    </div> -->
 
                     <div class="mb-3">
                         <label for="Nombre" class="form-label">Nombre:</label>
