@@ -1,7 +1,7 @@
-const confirmActions = message => confirm(message);
+const confirmActions = (message) => confirm(message);
 
 const dynamicNavBar = url => {
-    const navBarImageLink = document.getElementById("navigationBarContainer").children[0];
+    const navBarImageLink = document.querySelector("#navigationBarContainer").children[0];
     navBarImageLink.setAttribute("href", url);
     // console.log(navBarImageLink.getAttribute("href"))
 }
@@ -17,8 +17,8 @@ const openUpdateProductWindow = (button) => {
 }
 
 const searchTableValue = (inputName, cellNumber) => {
-    const input = document.getElementById(inputName).value.toLowerCase();
-    const tBody = document.getElementById("tBody");
+    const input = document.querySelector('#' + inputName).value.toLowerCase();
+    const tBody = document.querySelector("#tBody");
     const rows = tBody.getElementsByTagName("tr");
 
     for (let i = 0; i < rows.length; i++) {
@@ -42,125 +42,110 @@ const getPriceProduct = () => {
     const selectedOption = productSelect.selectedOptions[0];
 
     if (!selectedOption || selectedOption.disabled) {
-        return;
+        return false;
     }
 
     let productPrice = selectedOption.getAttribute("data-price");
     let productPiece = selectedOption.getAttribute("data-piece");
 
     if (productPrice && productPiece) {
-        let productQuantity = document.getElementById("Cantidad");
+        let productQuantity = document.querySelector("#Cantidad");
 
         productQuantity.value = 1;
-        document.getElementById("Total").value = productPrice;
-        document.getElementById("Precio").value = productPrice;
+        document.querySelector("#Total").value = productPrice;
+        document.querySelector("#Precio").value = productPrice;
 
         productQuantity.removeAttribute("readonly");
-        document.getElementById("quantityAvailable").innerText = "Cantidad disponible: " + productPiece;
+        document.querySelector("#quantityAvailable").innerText = "Cantidad disponible: " + productPiece;
         productQuantity.setAttribute("max", productPiece);
     }
 }
 
 const calculateTotalPrice = () => {
-    let productQuantity = document.getElementById("Cantidad").value;
-    let productID = document.getElementById("ID_Product").value;
+    let productQuantity = document.querySelector("#Cantidad").value;
+    let productID = document.querySelector("#ID_Product").value;
 
     if (productQuantity > 0 && productID) {
-        let productPrice = document.getElementById("Precio").value;
+        let productPrice = document.querySelector("#Precio").value;
         productPrice = parseFloat(productPrice);
         let totalPrice = productPrice * productQuantity;
-        document.getElementById("Total").value = totalPrice.toFixed(2);
+        document.querySelector("#Total").value = totalPrice.toFixed(2);
     }
 }
 
 const calculateTotalCost = () => {
-    let productQuantity = document.getElementById("Cantidad").value;
-    let productCost = document.getElementById("CostoUnidad").value;
+    let productQuantity = document.querySelector("#Cantidad").value;
+    let productCost = document.querySelector("#CostoUnidad").value;
 
-    if (productQuantity > 0 & productCost > 0) {
+    if (productQuantity > 0 && productCost > 0) {
         productCost = parseFloat(productCost);
         let totalCost = productCost * productQuantity;
-        document.getElementById("CostoTotal").value = totalCost.toFixed(2);
+        document.querySelector("#CostoTotal").value = totalCost.toFixed(2);
     } else {
-        document.getElementById("CostoTotal").value = 0;
+        document.querySelector("#CostoTotal").value = 0;
     }
 }
 
-const deleteProductSale = Id => {
+const deleteProductSale = (Id) => {
     let row = Id.parentNode.parentNode;
-    let tableProductSales = document.getElementById("salesProductsTable");
+    let tableProductSales = document.querySelector("#salesProductsTable");
     let productSelect = document.querySelector("#ID_Product");
     let selectedProductOption = productSelect.selectedOptions[0]; //el option seleccionado de select
     let allSelectOptions = productSelect.children; //todos los option del select
-
-    let TotalSale = document.getElementById("totalProductSales");
-
+    let TotalSale = document.querySelector("#totalProductSales").innerText.replace("$", "");
     let productName = row.children[1].innerText;
     let productQuantitySale = row.children[2].innerText;
-    let totalProductSale = row.children[4].innerText;
-
+    let totalProductSale = row.children[4].innerText.replace("$", "");
     let newTotalSale = 0;
     let productQuantity = selectedProductOption.getAttribute("data-piece");
     let newTotalQuantity = 0;
-    let inputQuantity = document.getElementById("Cantidad");
-    let price = undefined;
+    let inputQuantity = document.querySelector("#Cantidad");
+    let price = 0;
     const allProductNames = [];
     let productIndexOption = 0;
-    let productUpdate = undefined;
-    let noSelectedProductQuantity = undefined
-    // Variables correctas
-
-    totalProductSale = totalProductSale.replace("$", ""); //cambiar el $ del total del producto vendido
-    TotalSale = TotalSale.innerText; // obtener valor de la venta total 
-    TotalSale = TotalSale.replace("$", ""); //cambiar el $ del total vendido
+    let productUpdate = "";
+    let noSelectedProductQuantity = undefined;
+    let totalInput = document.querySelector("#Total");
+    let precioInput = document.querySelector("#Precio");
 
     newTotalSale = parseFloat(TotalSale) - parseFloat(totalProductSale); // Restar del total general el total del producto a eliminar
     tableProductSales.deleteRow(row.rowIndex); //Elimina la fila 
-    document.getElementById("totalProductSales").innerText = "$" + newTotalSale; //asigna el nuevo total al elemento
-
+    document.querySelector("#totalProductSales").innerText = "$" + newTotalSale; //asigna el nuevo total al elemento
     newTotalQuantity = parseInt(productQuantity) + parseInt(productQuantitySale); //Suma a la cantidad total del producto la cantidad vendida eliminada
 
     for (let index = 0; index < allSelectOptions.length; index++) {
         allProductNames.push(allSelectOptions[index].innerText);
     }
 
-    if (selectedProductOption.innerText == productName) {
+    if (selectedProductOption.innerText == productName) { // Si el usuario va a eliminar el producto vendido MIENTRAS TIENE SELECCIONADO EL MISMO PRODUCTO
         selectedProductOption.setAttribute("data-piece", newTotalQuantity);
         price = selectedProductOption.getAttribute("data-price");
-        inputQuantity.value = 1;
         inputQuantity.setAttribute("max", newTotalQuantity);
-        document.getElementById("Total").value = price;
-        document.getElementById("Precio").value = price;
-        document.getElementById("quantityAvailable").innerText = "Cantidad disponible: " + newTotalQuantity;
-        console.log("Se cumplio la primera condicion");
+        document.querySelector("#quantityAvailable").innerText = "Cantidad disponible: " + newTotalQuantity;
 
-    } else if (selectedProductOption.innerText == productName + " (No disponible)") {
+    } else if (selectedProductOption.innerText == productName + " (No disponible)") { // Si el producto a eliminar ESTA SELECIONADO POR EL USUARIO Y ADEMAS SE QUEDO SIN EXISTENCIAS
         price = selectedProductOption.getAttribute("data-price");
         inputQuantity.value = 1;
         inputQuantity.setAttribute("max", newTotalQuantity);
-        document.getElementById("Total").value = price;
-        document.getElementById("Precio").value = price;
+        totalInput.value = price;
+        precioInput.value = price;
         inputQuantity.removeAttribute("readonly");
         selectedProductOption.innerText = productName;
         selectedProductOption.setAttribute("data-piece", newTotalQuantity);
         selectedProductOption.removeAttribute("disabled");
-        document.getElementById("quantityAvailable").innerText = "Cantidad disponible: " + newTotalQuantity;
-        console.log("Se cumplio la segunda condicion");
-
+        document.querySelector("#quantityAvailable").innerText = "Cantidad disponible: " + newTotalQuantity;
     } else {
-
-        if (allProductNames.indexOf(productName) != -1) {
+        // EL USUARIO NO TIENE SELECIONADO EL PRODUCTO , PERO EL PRODUCTO SE QUEDO CON EXISTENCIAS.
+        if (allProductNames.indexOf(productName) !== -1) {
             productIndexOption = allProductNames.indexOf(productName);
             productUpdate = allSelectOptions[productIndexOption];
-
             noSelectedProductQuantity = productUpdate.getAttribute("data-piece");
             newTotalQuantity = parseInt(noSelectedProductQuantity) + parseInt(productQuantitySale);
             productUpdate.setAttribute("data-piece", newTotalQuantity);
-
+        // EL USUARIO NO TIENE SELECIONADO EL PRODUCTO , PERO EL PRODUCTO SE QUEDO SIN EXISTENCIAS.
         } else {
             productIndexOption = allProductNames.indexOf(productName + " (No disponible)");
             productUpdate = allSelectOptions[productIndexOption];
-
             noSelectedProductQuantity = productUpdate.getAttribute("data-piece");
             newTotalQuantity = parseInt(noSelectedProductQuantity) + parseInt(productQuantitySale);
             productUpdate.innerText = productName;
@@ -176,7 +161,7 @@ const saleAllProducts = () => {
     const allproductsToSaleValue = [];
 
     if (table.children.length > 0) {
-        action = confirmActions("¿Realizar venta de los productos?");
+        let action = confirmActions("¿Realizar venta de los productos?");
         if (action) {
             console.log(table.children)
         productsToSale = table.children;
@@ -197,7 +182,7 @@ const saleAllProducts = () => {
                 if (response.ok) {
                     response.json();
                     table.innerHTML = "";
-                    document.getElementById("totalProductSales").innerText = "$0";
+                    document.querySelector("#totalProductSales").innerText = "$0";
                     alert("Venta realizada con éxito.");
                         // .then(function (response) {
                         //     console.log(response);
